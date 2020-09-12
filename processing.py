@@ -12,7 +12,7 @@ DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 
 def add_gear(gear_type, ctx):
     if len(ctx.message.attachments) == 1:
-        gear_data = GearData(ctx.author.id, gear_type, ctx.message.attachments[0].url,
+        gear_data = GearData(user_id=ctx.author.id, gear_type=gear_type, scrn_path=ctx.message.attachments[0].url,
                              family_name=ctx.author.display_name, server_id=ctx.guild.id,
                              datestamp=date.today())
         gear_data = detect_text(gear_data)
