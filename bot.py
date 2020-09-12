@@ -111,7 +111,7 @@ async def init_function(ctx):
     conn = create_connection(DB_PATH)
     table_check(conn)
     GAPP_CRED = os.getenv('GAPP_CRED')
-    open(f'{HOME_PATH}gapp_cred.json', 'wb').write(GAPP_CRED)
+    open(f'{HOME_PATH}gapp_cred.json', 'w+').write(GAPP_CRED)
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f'{HOME_PATH}gapp_cred.json'
     await ctx.send(response)
 
