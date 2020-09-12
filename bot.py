@@ -107,12 +107,15 @@ __________________________________________________________________
 
 @bot.command(name='init')
 async def init_function(ctx):
-    response = 'initializing...'
-    conn = create_connection(DB_PATH)
-    table_check(conn)
-    GAPP_CRED = os.getenv('GAPP_CRED')
-    open(f'{HOME_PATH}gapp_cred.json', 'w+').write(GAPP_CRED)
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f'{HOME_PATH}gapp_cred.json'
+    if ctx.author.id != 152611107633233920:
+        response = "🤔 You aren't my mom you can't tell me what to do! 😡"
+    else:
+        response = 'initializing...'
+        conn = create_connection(DB_PATH)
+        table_check(conn)
+        GAPP_CRED = os.getenv('GAPP_CRED')
+        open(f'{HOME_PATH}gapp_cred.json', 'w+').write(GAPP_CRED)
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f'{HOME_PATH}gapp_cred.json'
     await ctx.send(response)
 
 bot.run(TOKEN)
