@@ -1,0 +1,6 @@
+dotenv
+pip3
+discord.py
+sqlite3
+pillow
+pytesseract
