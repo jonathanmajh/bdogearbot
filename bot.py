@@ -2,9 +2,10 @@
 import os
 import discord
 import random
+import time
 from dotenv import load_dotenv
 
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from database import create_connection, table_check, update_gear, find_gear
 from models import GearData
@@ -15,8 +16,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 
-bot = commands.Bot(command_prefix='?')
-
+bot = commands.Bot(command_prefix='~')
 
 @bot.event
 async def on_ready():
@@ -122,4 +122,22 @@ async def init_function(ctx):
         table_check(conn)
     await ctx.send(response)
 
+# wday, hour, minute in UTC 15 min early
+GARMOTH_SCHEDULE = [[2, 03, 00], [4, 03, 00], [6, 23, 45]]
+previous_boss = None # because we check once every 15 seconds we need to make sure we dont call same boss multiple times
+@tasks.loop(seconds=15.0)
+async def boss_nagging():
+    if previous_boss == None: # if bot got restart we need check where we are
+        for count, spawn in enumerate(GARMOTH_SCHEDULE):
+            if time.gmtime().tm_wday > spawn[0]:
+                previous_boss = count
+    
+    print('nagging')
+    channel = bot.get_channel('285232745150677013') # TODO change dachi general channel
+    message = '<!@152611107633233920> Garmoth in 15 minutes CTG when?????' #TODO change to gm
+    await channel.send(message)
+
 bot.run(TOKEN)
+
+
+
