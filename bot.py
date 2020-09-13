@@ -115,12 +115,4 @@ async def init_function(ctx):
         table_check(conn)
     await ctx.send(response)
 
-@bot.command(name='credentials')
-async def init_function(ctx):
-    GAPP_CRED = os.getenv('GAPP_CRED')
-    open(f'{HOME_PATH}gapp_cred.json', 'w+').write(GAPP_CRED)
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f'{HOME_PATH}gapp_cred.json'
-    response = f'''```{os.listdir()}```'''
-    await ctx.send(response)
-
 bot.run(TOKEN)
