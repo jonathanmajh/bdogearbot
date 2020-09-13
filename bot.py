@@ -74,6 +74,13 @@ async def expose_gm(ctx):
         '🥳 Grief GM for Raise! 🥳',
         '😭 GM 😰 TOXIC 😨',
         '😂 GM is a self-proclaimed MILF 🤣',
+        'GM uses horsehair toothbrushes',
+        '🤢 GM likes playing with genitals 🤮',
+        '🤔 PSA: Asianblonde is not blonde 🧐',
+        "You haven't seen RNGcarried until you see GM's gear",
+        '😱 GM killed guild members for fun 💀',
+        '🤨 GM keeps all the guild silver to herself! Guild payout when? 😤',
+        '😤 Join <Tomodachi> to spite GM 😤',
     ]
     await ctx.send(random.choice(MESSAGES))
 
