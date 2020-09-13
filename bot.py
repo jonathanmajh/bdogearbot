@@ -24,6 +24,7 @@ async def on_ready():
     print("The bot is connected to the following guilds:")
     for guild in bot.guilds:
         print("{} : {}".format(guild.name, guild.id))
+    await boss_nagging.start()
 
 
 @bot.command(name='nouver', help='Updates your gear with nouver sub-weapon')
@@ -123,19 +124,17 @@ async def init_function(ctx):
     await ctx.send(response)
 
 # wday, hour, minute in UTC 15 min early
-GARMOTH_SCHEDULE = [[2, 03, 00], [4, 03, 00], [6, 23, 45]]
-previous_boss = None # because we check once every 15 seconds we need to make sure we dont call same boss multiple times
-@tasks.loop(seconds=15.0)
+GARMOTH_SCHEDULE = [[2, 3, 0], [4, 3, 0], [6, 23, 45]]
+@tasks.loop(seconds=60.0)
 async def boss_nagging():
-    if previous_boss == None: # if bot got restart we need check where we are
-        for count, spawn in enumerate(GARMOTH_SCHEDULE):
-            if time.gmtime().tm_wday > spawn[0]:
-                previous_boss = count
-    
-    print('nagging')
-    channel = bot.get_channel('285232745150677013') # TODO change dachi general channel
-    message = '<!@152611107633233920> Garmoth in 15 minutes CTG when?????' #TODO change to gm
-    await channel.send(message)
+    time_now = time.gmtime()
+    for spawn in GARMOTH_SCHEDULE:
+        if time_now.tm_wday == spawn[0]:
+            if time_now.tm_hour == spawn[1]:
+                if time_now.tm_min == spawn[2]:
+                    channel = bot.get_channel(715760182201679883)
+                    message = '<@!150050397883596800> Garmoth in 15 minutes CTG when?????'
+                    await channel.send(message)
 
 bot.run(TOKEN)
 
