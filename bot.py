@@ -3,6 +3,7 @@ import os
 import discord
 import random
 import time
+import subprocess
 from dotenv import load_dotenv
 
 from discord.ext import commands, tasks
@@ -15,8 +16,10 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
+version = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
 
-bot = commands.Bot(command_prefix='~')
+bot = commands.Bot(command_prefix='?', description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
+bot.owner_id = 152611107633233920
 
 @bot.event
 async def on_ready():
@@ -113,7 +116,7 @@ __________________________________________________________________
     await ctx.send(response)
 
 
-@bot.command(name='init')
+@bot.command(name='gearinit')
 async def init_function(ctx):
     if ctx.author.id != 152611107633233920:
         response = "🤔 You aren't my mom you can't tell me what to do! 😡"
@@ -125,6 +128,7 @@ async def init_function(ctx):
 
 # wday, hour, minute in UTC 15 min early
 GARMOTH_SCHEDULE = [[2, 3, 0], [4, 3, 0], [6, 23, 45]]
+
 @tasks.loop(seconds=60.0)
 async def boss_nagging():
     time_now = time.gmtime()
