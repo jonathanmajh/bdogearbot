@@ -18,7 +18,7 @@ HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 version = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
 
-bot = commands.Bot(command_prefix='?', description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
+bot = commands.Bot(command_prefix='~', description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
 bot.owner_id = 152611107633233920
 
 @bot.event
@@ -52,7 +52,7 @@ async def add_gear_kutum(ctx):
     await ctx.send(response)
 
 
-@bot.command(name='gear', help='Shows gear for member "~gear @Name" [nouver/kutum], if sub-weapon is not specified both will be returned')
+@bot.command(name='gear', help='Shows gear for member "~gear @Name" [nouver/kutum]')
 async def retrive_gear(ctx, user_id, gear_type: str = None):
     if len(ctx.message.mentions) == 1:
         gear_data = get_gear(ctx.message.mentions[0].id, gear_type)
@@ -118,12 +118,12 @@ __________________________________________________________________
 
 @bot.command(name='gearinit')
 async def init_function(ctx):
-    if ctx.author.id != 152611107633233920:
-        response = "🤔 You aren't my mom you can't tell me what to do! 😡"
-    else:
+    if await bot.is_owner(ctx.author):
         response = 'initializing...'
         conn = create_connection(DB_PATH)
         table_check(conn)
+    else:
+        response = "🤔 You aren't my mom you can't tell me what to do! 😡"
     await ctx.send(response)
 
 # wday, hour, minute in UTC 15 min early
