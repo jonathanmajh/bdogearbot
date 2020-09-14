@@ -107,8 +107,18 @@ def update_server_requests(server_id):
     cur = conn.cursor()
     cur.execute(sql, )
     conn.commit()
-    return True
+    sql = f'SELECT requests_made FROM server_info WHERE server_id={server_id};'
+    cur.execute(sql, )
+    rows = cur.fetchall()
+    return rows
 
+def reset_server_requests(new_limit):
+    conn = create_connection()
+    sql = f'UPDATE server_info SET requests_made = {new_limit}'
+    cur = conn.cursor()
+    cur.execute(sql, )
+    conn.commit()
+    return True
 
 def update_gear(gear_data):
     conn = create_connection()

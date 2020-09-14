@@ -3,7 +3,7 @@ import discord
 import shutil
 
 from discord.ext import commands
-from database import table_check, add_server
+from database import table_check, add_server, reset_server_requests
 from models import ServerInfo
 
 class AdminCog(commands.Cog):
@@ -66,6 +66,15 @@ Ex. "?setup default"'
         shutil.copy(f'{source_dir}gear_bot_db.db', f'{dest_dir}gear_bot_db.db')
         shutil.copytree(f'{source_dir}screenshots/', f'{dest_dir}screenshots/')
         await ctx.send('Finished backing up data...\nMaintence prep finished!')
+
+
+    @commands.command(name='resetlimit', hidden=True)
+    @commands.is_owner()
+    async def reset_limit(self, ctx, new_limit:int): #int 
+        await self.bot.change_presence(activity=discord.Game('Resetting the rate limit for everyone <3'))
+        reset_server_requests(new_limit)
+        await ctx.send(f'Reset remaining requests for all guilds to {new_limit}')
+        await self.bot.change_presence(activity=discord.Game('Black Spirit Notice Me!'))
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))

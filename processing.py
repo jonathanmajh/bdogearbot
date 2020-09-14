@@ -2,7 +2,7 @@ import os
 import requests
 from models import GearData, Result, SimpleGearData
 from dotenv import load_dotenv
-from database import update_gear, create_connection, find_gear, find_average, find_all, del_gear
+from database import update_gear, create_connection, find_gear, find_average, find_all, del_gear, update_server_requests
 from cloud_vision import detect_text
 from datetime import date
 
@@ -16,6 +16,13 @@ def add_gear(gear_type, ctx):
         gear_data = GearData(user_id=ctx.author.id, gear_type=gear_type, scrn_path=ctx.message.attachments[0].url,
                              family_name=ctx.author.display_name, server_id=ctx.guild.id,
                              datestamp=date.today())
+        limit = update_server_requests(ctx.guild.id)
+        if limit[0][0] < 0:
+            return Result(False, 'This guild has reached the maximum of gear update requests for this month')
+        elif limit[0][0] < 20:
+            message = f'Note: This guild has {limit[0][0]} gear update requests remaining'
+        else:
+            message = None
         gear_data = detect_text(gear_data)
         if gear_data.status:
             gear_data = gear_data.gear_data
@@ -27,7 +34,7 @@ def add_gear(gear_type, ctx):
             open(photo_path, 'wb').write(r.content)
             gear_data.scrn_path = photo_path
             gear_data = update_gear(gear_data)
-            return Result(True, gear_data=gear_data)
+            return Result(True, message=message, gear_data=gear_data)
         else:
             return gear_data  # with message
 
