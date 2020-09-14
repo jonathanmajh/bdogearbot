@@ -2,3 +2,5 @@
 *.json
 *.db
 /screenshots/*
+*.py[cod]
+!/screenshots/example.png

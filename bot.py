@@ -16,10 +16,22 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
-version = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
+version = subprocess.check_output(
+    ["git", "describe", "--always"]).strip().decode()
 
-bot = commands.Bot(command_prefix='~', description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
+initial_extensions = ['cogs.fun']
+
+bot = commands.Bot(command_prefix='~',
+                   description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
 bot.owner_id = 152611107633233920
+
+if __name__ == '__main__':
+    for extension in initial_extensions:
+        try:
+            bot.load_extension(extension)
+        except Exception as e:
+            print(f'Failed to load extension {extension}.')
+
 
 @bot.event
 async def on_ready():
@@ -27,7 +39,8 @@ async def on_ready():
     print("The bot is connected to the following guilds:")
     for guild in bot.guilds:
         print("{} : {}".format(guild.name, guild.id))
-    await boss_nagging.start()
+    await bot.change_presence(activity=discord.Game('Black Spirit Notice Me!'))
+    # await boss_nagging.start() no nagging for now
 
 
 @bot.command(name='nouver', help='Updates your gear with nouver sub-weapon')
@@ -72,23 +85,6 @@ async def retrive_gear(ctx, user_id, gear_type: str = None):
     await ctx.send(response)
 
 
-@bot.command(name='gm')
-async def expose_gm(ctx):
-    MESSAGES = [
-        '🥳 Grief GM for Raise! 🥳',
-        '😭 GM 😰 TOXIC 😨',
-        '😂 GM is a self-proclaimed MILF 🤣',
-        'GM uses horsehair toothbrushes',
-        '🤢 GM likes playing with genitals 🤮',
-        '🤔 PSA: Asianblonde is not blonde 🧐',
-        "You haven't seen RNGcarried until you see GM's gear",
-        '😱 GM killed guild members for fun 💀',
-        '🤨 GM keeps all the guild silver to herself! Guild payout when? 😤',
-        '😤 Join <Tomodachi> to spite GM 😤',
-    ]
-    await ctx.send(random.choice(MESSAGES))
-
-
 @bot.command(name='gearaverage', help='Get the average GS of the guild')
 async def guild_average(ctx, gear_type=None):
     result = get_average(ctx.guild.id, gear_type)
@@ -120,14 +116,14 @@ __________________________________________________________________
 async def init_function(ctx):
     if await bot.is_owner(ctx.author):
         response = 'initializing...'
-        conn = create_connection(DB_PATH)
-        table_check(conn)
+        table_check()
     else:
         response = "🤔 You aren't my mom you can't tell me what to do! 😡"
     await ctx.send(response)
 
 # wday, hour, minute in UTC 15 min early
 GARMOTH_SCHEDULE = [[2, 3, 0], [4, 3, 0], [6, 23, 45]]
+
 
 @tasks.loop(seconds=60.0)
 async def boss_nagging():
@@ -140,7 +136,4 @@ async def boss_nagging():
                     message = '<@!150050397883596800> Garmoth in 15 minutes CTG when?????'
                     await channel.send(message)
 
-bot.run(TOKEN)
-
-
-
+bot.run(TOKEN, bot=True, reconnect=True)
