@@ -15,7 +15,7 @@ version = subprocess.check_output(
 
 initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin']
 
-bot = commands.Bot(command_prefix='~',
+bot = commands.Bot(command_prefix='?',
                    description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
 bot.owner_id = 152611107633233920
 
