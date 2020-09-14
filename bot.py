@@ -1,16 +1,10 @@
 # bot.py
 import os
 import discord
-import random
-import time
 import subprocess
 from dotenv import load_dotenv
 
 from discord.ext import commands, tasks
-
-from database import create_connection, table_check, update_gear, find_gear
-from models import GearData
-from processing import add_gear, get_gear, get_average, get_all
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
