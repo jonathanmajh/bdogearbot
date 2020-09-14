@@ -15,7 +15,6 @@ def create_connection():
     conn = None
     try:
         conn = sqlite3.connect(DB_PATH)
-        print(sqlite3.version)
     except Error as e:
         print(e)
 
@@ -34,7 +33,7 @@ def table_check():
         ''')
         row = cur.fetchall()
         if len(row) == 0:
-            print('creating table')
+            print('creating member table')
             cur.execute('''
 CREATE TABLE IF NOT EXISTS member_gear (
     user_id int NOT NULL, 
@@ -57,7 +56,7 @@ CREATE TABLE IF NOT EXISTS member_gear (
         ''')
         row = cur.fetchall()
         if len(row) == 0:
-            print('creating table')
+            print('creating server table')
             cur.execute('''
 CREATE TABLE IF NOT EXISTS server_info (
     server_id int PRIMARY KEY,
@@ -75,14 +74,14 @@ CREATE TABLE IF NOT EXISTS server_info (
         ''')
         row = cur.fetchall()
         if len(row) == 0:
-            print('creating table')
+            print('creating message table')
             cur.execute('''
 CREATE TABLE IF NOT EXISTS server_messages (
     server_id int NOT NULL,
     message text NOT NULL
 );''')
         else:
-            print('server table already exists')
+            print('message table already exists')
         return True
 
 
@@ -130,7 +129,6 @@ def find_gear(find):
     sql = f'SELECT * FROM member_gear WHERE user_id={find[0]}'
     if len(find) == 2:
         sql = sql + f' AND gear_type="{find[1]}"'
-    print(sql)
     cur.execute(sql, )
     rows = cur.fetchall()
     return rows
@@ -142,7 +140,6 @@ def find_average(find):
     sql = f'SELECT gs FROM member_gear WHERE server_id={find[0]}'
     if len(find) == 2:
         sql = sql + f' AND gear_type="{find[1]}"'
-    print(sql)
     cur.execute(sql,)
     rows = cur.fetchall()
     return rows
@@ -155,7 +152,6 @@ def find_all(find):
     if len(find) == 2:
         sql = sql + f' AND gear_type="{find[1]}"'
     sql = sql + ' ORDER BY gs DESC'
-    print(sql)
     cur.execute(sql,)
     rows = cur.fetchall()
     return rows
@@ -177,6 +173,8 @@ def get_server_message(server_id, all):
     sql = f'SELECT message FROM server_messages WHERE server_id={server_id};'
     cur.execute(sql,)
     rows = cur.fetchall()
+    if len(rows) == 0:
+        return False
     if all:
         return list(rows)
     else:

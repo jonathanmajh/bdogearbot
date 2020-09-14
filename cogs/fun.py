@@ -4,7 +4,7 @@ from discord.ext import commands
 from database import add_server_message, get_server_message
 
 
-class ForFunCog(commands.Cog):
+class ForFunCog(commands.Cog, name='4FUNctions'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -14,27 +14,34 @@ class ForFunCog(commands.Cog):
         if os.path.isfile(emote_path):
             await ctx.send(file=discord.File(emote_path))
         else:
-            await ctx.send(message='That emote does not exist, make sure you are using the same name as BDO but with all lowercase')
+            await ctx.send('That emote does not exist, make sure you are using the same name as BDO but with all lowercase')
 
     @commands.command(aliases=['expose'])
-    async def guild(self, ctx, *, arg):
+    async def guild(self, ctx, *, arg=None):
         """
         Send a scathing message about the guild
 
         ?guild list to show all messages
         """
         if arg == None:
-            response = f'```{get_server_message(ctx.guild.id, False)[0]}```'
+            result = get_server_message(ctx.guild.id, False)
+            if result:
+                response = f'```{result[0][0]}```'
+            else:
+                response = 'There are no saved messages'
         elif arg == 'list':
             response = '```'
             messages = get_server_message(ctx.guild.id, True)
-            for message in messages:
-                response = f'{response}{message}\n'
-            response = f'{response}```'
+            if messages:
+                for message in messages:
+                    response = f'{response}{message[0]}\n'
+                response = f'{response}```'
+            else:
+                response = 'There are no saved messages'
         else:
             add_server_message(ctx.guild.id, arg)
             response = f'{arg} has been added for this Guild'
-        await ctx.send(message=response)
+        await ctx.send(response)
 
 
 def setup(bot):

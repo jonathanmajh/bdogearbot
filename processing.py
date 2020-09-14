@@ -38,10 +38,8 @@ def add_gear(gear_type, ctx):
 def get_gear(user_id, gear_type=None):
     if gear_type == None:
         find = [user_id]
-    elif gear_type == 'kutum' or gear_type == 'Kutum':
-        find = [user_id, 'kutum']
-    else:  # Nouver
-        find = [user_id, 'nouver']
+    else:
+        find = [user_id, gear_type.lower()]
 
     results = find_gear(find)
 
@@ -60,10 +58,8 @@ def get_gear(user_id, gear_type=None):
 def get_average(guild_id, gear_type):
     if gear_type == None:
         find = [guild_id]
-    elif gear_type == 'kutum' or gear_type == 'Kutum':
-        find = [guild_id, 'kutum']
-    else:  # Nouver
-        find = [guild_id, 'nouver']
+    else:
+        find = [guild_id, gear_type.lower()]
 
     results = find_average(find)
 
@@ -79,10 +75,8 @@ def get_average(guild_id, gear_type):
 def get_all(guild_id, gear_type):
     if gear_type == None:
         find = [guild_id]
-    elif gear_type == 'kutum' or gear_type == 'Kutum':
-        find = [guild_id, 'kutum']
-    else:  # Nouver
-        find = [guild_id, 'nouver']
+    else:
+        find = [guild_id, gear_type.lower()]
 
     results = find_all(find)
 
