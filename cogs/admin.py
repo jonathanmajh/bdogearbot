@@ -1,4 +1,7 @@
+import os
 import discord
+import shutil
+
 from discord.ext import commands
 from database import table_check, add_server
 from models import ServerInfo
@@ -47,6 +50,22 @@ Ex. "?setup default"'
             response = 'unimplimented (:'
         await ctx.send(response)
 
+
+    @commands.command(name='maint', hidden=True)
+    @commands.is_owner()
+    async def maintenance(self, ctx, state): #start/end
+        await self.bot.change_presence(activity=discord.Game('Currently Undergoing Maintence!'))
+        await ctx.send('Starting maintence mode...\nUnloading extensions...')
+        self.bot.unload_extension('cogs.fun')
+        self.bot.unload_extension('cogs.gear')
+        await ctx.send('Extensions unloaded...\nNow backing up data...')
+        source_dir = os.getenv('HOME_PATH')
+        dest_dir = f'{source_dir[:-11]}backup/'
+        shutil.rmtree(dest_dir, ignore_errors=True)
+        os.mkdir(dest_dir)
+        shutil.copy(f'{source_dir}gear_bot_db.db', f'{dest_dir}gear_bot_db.db')
+        shutil.copytree(f'{source_dir}screenshots/', f'{dest_dir}screenshots/')
+        await ctx.send('Finished backing up data...\nMaintence prep finished!')
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))

@@ -2,7 +2,7 @@ import os
 import requests
 from models import GearData, Result, SimpleGearData
 from dotenv import load_dotenv
-from database import update_gear, create_connection, find_gear, find_average, find_all
+from database import update_gear, create_connection, find_gear, find_average, find_all, del_gear
 from cloud_vision import detect_text
 from datetime import date
 
@@ -54,6 +54,17 @@ def get_gear(user_id, gear_type=None):
             photos.append(result[2])
         return Result(True, msg, photos=photos)
 
+def remove_gear(user_id, gear_type):
+    if gear_type == 'all':
+        find = [user_id]
+    else:
+        find = [user_id, gear_type.lower()]
+
+    result = del_gear(find)
+    if len(result) == 0:
+        return Result(True, 'There was no gear associated with your user to remove')
+    print(str(result))
+    return Result(True, f'Deleted {len(result)} gear entries')
 
 def get_average(guild_id, gear_type):
     if gear_type == None:

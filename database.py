@@ -78,7 +78,8 @@ CREATE TABLE IF NOT EXISTS server_info (
             cur.execute('''
 CREATE TABLE IF NOT EXISTS server_messages (
     server_id int NOT NULL,
-    message text NOT NULL
+    message text NOT NULL,
+    user_id int NOT NULL
 );''')
         else:
             print('message table already exists')
@@ -133,6 +134,21 @@ def find_gear(find):
     rows = cur.fetchall()
     return rows
 
+def del_gear(find):
+    conn = create_connection()
+    cur = conn.cursor()
+    sql_del = f'DELETE FROM member_gear WHERE user_id={find[0]}'
+    sql_find = f'SELECT gear_photo FROM member_gear WHERE user_id={find[0]}'
+    if len(find) == 2:
+        sql_del = sql_del + f' AND gear_type="{find[1]}"'
+        sql_find = sql_find + f' AND gear_type="{find[1]}"'
+    cur.execute(sql_find, )
+    rows = cur.fetchall()
+
+    cur.execute(sql_del, )
+    conn.commit()
+    
+    return rows
 
 def find_average(find):
     conn = create_connection()
@@ -157,11 +173,11 @@ def find_all(find):
     return rows
 
 
-def add_server_message(server_id, message):
+def add_server_message(server_id, message, user_id):
     conn = create_connection()
-    sql = 'INSERT INTO server_messages(server_id,message) values (?,?)'
+    sql = 'INSERT INTO server_messages(server_id,message,user_id) values (?,?,?)'
     cur = conn.cursor()
-    payload = (server_id, message)
+    payload = (server_id, message, user_id)
     cur.execute(sql, payload)
     conn.commit()
     return True
@@ -170,7 +186,7 @@ def add_server_message(server_id, message):
 def get_server_message(server_id, all):
     conn = create_connection()
     cur = conn.cursor()
-    sql = f'SELECT message FROM server_messages WHERE server_id={server_id};'
+    sql = f'SELECT message, user_id FROM server_messages WHERE server_id={server_id};'
     cur.execute(sql,)
     rows = cur.fetchall()
     if len(rows) == 0:

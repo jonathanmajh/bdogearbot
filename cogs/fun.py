@@ -29,18 +29,21 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
                 response = f'```{result[0][0]}```'
             else:
                 response = 'There are no saved messages'
-        elif arg == 'list':
+        elif arg == 'list' or arg == 'listd':
             response = '```'
             messages = get_server_message(ctx.guild.id, True)
             if messages:
                 for message in messages:
-                    response = f'{response}{message[0]}\n'
+                    if arg == 'list':
+                        response = f'{response}{message[0]}\n'
+                    else:
+                        response = f'{response}{message[0]}|{message[1]}\n'
                 response = f'{response}```'
             else:
                 response = 'There are no saved messages'
         else:
-            add_server_message(ctx.guild.id, arg)
-            response = f'{arg} has been added for this Guild'
+            add_server_message(ctx.guild.id, arg, ctx.author.id)
+            response = f'"{arg}" has been added for this Guild'
         await ctx.send(response)
 
 
