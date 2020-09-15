@@ -22,6 +22,7 @@ class GearCog(commands.Cog, name='Gear'):
         if len(gear_type) > 9:
             await ctx.send('specified gear type is longer than 9 characters')
         else:
+            message = ''
             gear_data = add_gear(gear_type, ctx)
             if gear_data.status:
                 message = gear_data.message
