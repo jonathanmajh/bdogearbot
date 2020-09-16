@@ -9,18 +9,18 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(help='Ping a random member for a hug')
+    @commands.command(help='Ping a random member for a hug, only pings online members', aliases=['trees'])
     async def hug(self, ctx):
         members = ctx.guild.members
         found = False
         while not found:
             found = choice(members)
-            if found.status.value != 'online':
+            if found.status.value != 'online' or found.bot:
                 found = False
         if choice(range(100)) > 90:
             response = f'{ctx.author.display_name} was griefing a guildie! 😲 <@!{found.id}> go show them their place! 😡'
         else:
-            response = f'{ctx.author.display_name} is feeling sad 😥 <@!{found.id}> can you give them a hug? 🤗'
+            response = f'{ctx.author.display_name} is feeling sad 😥 <@!{found.id}> can you give them a hug? 🤗 Or maybe doing trees with them is better 🤑'
         await ctx.send(response)
 
     @commands.command(aliases=['e'], help='Send a BDO Emote "?e emote_name"')
