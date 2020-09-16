@@ -4,7 +4,7 @@ import discord
 import subprocess
 from dotenv import load_dotenv
 
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -13,9 +13,9 @@ DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
-initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin']
+initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin', 'cogs.bosstimer']
 
-bot = commands.Bot(command_prefix='?',
+bot = commands.Bot(command_prefix='~',
                    description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
 bot.owner_id = 152611107633233920
 

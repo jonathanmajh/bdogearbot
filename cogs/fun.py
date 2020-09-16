@@ -1,12 +1,27 @@
 import os
 import discord
 from discord.ext import commands
+from random import choice
 from database import add_server_message, get_server_message
 
 
 class ForFunCog(commands.Cog, name='4FUNctions'):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(help='Ping a random member for a hug')
+    async def hug(self, ctx):
+        members = ctx.guild.members
+        found = False
+        while not found:
+            found = choice(members)
+            if found.status.value != 'online':
+                found = False
+        if choice(range(100)) > 90:
+            response = f'{ctx.author.display_name} was griefing a guildie! 😲 <@!{found.id}> go show them their place! 😡'
+        else:
+            response = f'{ctx.author.display_name} is feeling sad 😥 <@!{found.id}> can you give them a hug? 🤗'
+        await ctx.send(response)
 
     @commands.command(aliases=['e'], help='Send a BDO Emote "?e emote_name"')
     async def emote(self, ctx, emote_name: str):
@@ -16,7 +31,7 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
         else:
             await ctx.send('That emote does not exist, make sure you are using the same name as BDO but with all lowercase')
 
-    @commands.command(aliases=['expose'])
+    @commands.command(aliases=['expose', 'gm'])
     async def guild(self, ctx, *, arg=None):
         """
         Send a scathing message about the guild
