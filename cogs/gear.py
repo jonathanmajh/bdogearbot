@@ -30,7 +30,7 @@ class GearCog(commands.Cog, name='Gear'):
                 response = f'{gear_type} saved for {ctx.author.display_name}. {gear_data.succ_ap}/{gear_data.awak_ap}/{gear_data.dp}: GS: {gear_data.gs}\n'
             else:
                 response = gear_data.message
-            response = response + message
+            response = response + (message if not message else '')
             await ctx.send(response)
 
     @commands.command(name='gearremove', aliases=['grm'])
