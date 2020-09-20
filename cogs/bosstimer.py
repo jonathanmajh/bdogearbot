@@ -7,7 +7,7 @@ from models import Result
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = {
-        'garmoth': [[2, 3, 15], [4, 3, 15], [0, 0, 0]],
+        'garmoth': [[2, 3, 15], [4, 3, 15], [0, 0, 0], [6,23,19], [6,23,20], [6,23,21]],
         'vell': [[3, 0, 0], [6, 21, 0]],
         'karanda': [[0, 5, 15], [0, 7, 0], [1, 5, 15], [2, 0, 0],
                     [2, 7, 0], [2, 14, 0], [3, 3, 15], [4, 5, 15],
@@ -19,34 +19,41 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
 
     def __init__(self, bot):
         self.bot = bot
+        self.boss_nagging.start()
 
-    def date_compare(self, time_obj: [int]):
+    def date_compare(self, time_obj: [int], early:int=0):
         """
         ...
         """
         converted_time = datetime(
-            2000, 1, time_obj[0]+1, time_obj[1], time_obj[2])
+            2000, 1, time_obj[0]+1, time_obj[1], time_obj[2]) - timedelta(minutes=early)
         time_now = time.gmtime()
         time_now = datetime(2000, 1, time_now.tm_wday+1,
                             time_now.tm_hour, time_now.tm_min)
         if converted_time < time_now:
             return Result(False)
+        elif early != 0:
+            if converted_time == time_now:
+                return Result(True)
+            else:
+                return Result(False)
         else:
             time_diff = converted_time - time_now
             return Result(True, obj=time_diff)
 
     @tasks.loop(seconds=60.0)
     async def boss_nagging(self):
-        time_now = time.gmtime()
         for spawn in self.BOSS_SCHEDULE['garmoth']:
-            if time_now.tm_wday == spawn[0]:
-                if time_now.tm_hour == spawn[1]:
-                    minute = (45 if spawn[2] == 0 else spawn[2])
-                    if time_now.tm_min == minute:
-                        channel = self.bot.get_channel(715760182201679883)
-                        message = '<@!150050397883596800> Garmoth in 15 minutes CTG when?????'
-                        await channel.send(message)
-                        break
+            if self.date_compare(spawn, 30).status:
+                channel = self.bot.get_channel(715760182201679883)
+                message = '<@!150050397883596800> Garmoth in 30 minutes CTG when?????'
+                await channel.send(message)
+                break
+
+    @boss_nagging.before_loop
+    async def before_nagging(self):
+        print('waiting...')
+        await self.bot.wait_until_ready()
 
     @commands.command(name='nextboss')
     async def next_boss(self, ctx, boss_name: str = None):
