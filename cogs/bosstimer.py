@@ -7,7 +7,7 @@ from models import Result
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = {
-        'garmoth': [[2, 3, 15], [4, 3, 15], [0, 0, 0], [6,23,19], [6,23,20], [6,23,21]],
+        'garmoth': [[2, 3, 15], [4, 3, 15], [0, 0, 0]],
         'vell': [[3, 0, 0], [6, 21, 0]],
         'karanda': [[0, 5, 15], [0, 7, 0], [1, 5, 15], [2, 0, 0],
                     [2, 7, 0], [2, 14, 0], [3, 3, 15], [4, 5, 15],
