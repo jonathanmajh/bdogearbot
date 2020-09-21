@@ -7,21 +7,21 @@ from models import Result
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = {
-        'garmoth': [[2, 3, 15], [4, 3, 15], [0, 0, 0]],
+        'garmoth': [[7, 0, 0], [2, 3, 15], [4, 3, 15]],
         'vell': [[3, 0, 0], [6, 21, 0]],
-        'karanda': [[0, 5, 15], [0, 7, 0], [1, 5, 15], [2, 0, 0],
+        'karanda': [[7, 5, 15], [7, 7, 0], [1, 5, 15], [2, 0, 0],
                     [2, 7, 0], [2, 14, 0], [3, 3, 15], [4, 5, 15],
                     [4, 10, 0], [4, 17, 0], [5, 5, 15], [6, 0, 0]],
         'kutum': [[2, 21, 0]],
         'offin': [[2, 21, 0]],
     }
-    # wday, hour, minute in UTC 15 min early
+    # wday, hour, minute in UTC 15 min early, use wday=7 for monday instead of 0
 
     def __init__(self, bot):
         self.bot = bot
         self.boss_nagging.start()
 
-    def date_compare(self, time_obj: [int], early:int=0):
+    def date_compare(self, time_obj: [int], early: int = 0):
         """
         ...
         """
@@ -45,8 +45,17 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     async def boss_nagging(self):
         for spawn in self.BOSS_SCHEDULE['garmoth']:
             if self.date_compare(spawn, 30).status:
-                channel = self.bot.get_channel(715760182201679883)
-                message = '<@!150050397883596800> Garmoth in 30 minutes CTG when?????'
+                channel = self.bot.get_channel(285232745150677013)
+                message = '<@!152611107633233920> Garmoth in 30 minutes CTG when?????'
+                print(message)
+                await channel.send(message)
+                break
+
+        for spawn in self.BOSS_SCHEDULE['vell']:
+            if self.date_compare(spawn, 45).status:
+                channel = self.bot.get_channel(285232745150677013)
+                message = 'Vell in 45 minutes find your nearest **friendly** officer for ride'
+                print(message)
                 await channel.send(message)
                 break
 
