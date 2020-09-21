@@ -7,15 +7,15 @@ from models import Result
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = {
-        'garmoth': [[7, 0, 0], [2, 3, 15], [4, 3, 15]],
+        'garmoth': [[0, 0, 0], [2, 3, 15], [4, 3, 15]],
         'vell': [[3, 0, 0], [6, 21, 0]],
-        'karanda': [[7, 5, 15], [7, 7, 0], [1, 5, 15], [2, 0, 0],
+        'karanda': [[0, 5, 15], [0, 7, 0], [1, 5, 15], [2, 0, 0],
                     [2, 7, 0], [2, 14, 0], [3, 3, 15], [4, 5, 15],
                     [4, 10, 0], [4, 17, 0], [5, 5, 15], [6, 0, 0]],
         'kutum': [[2, 21, 0]],
         'offin': [[2, 21, 0]],
     }
-    # wday, hour, minute in UTC 15 min early, use wday=7 for monday instead of 0
+    # wday, hour, minute in UTC 15 min early
 
     def __init__(self, bot):
         self.bot = bot
@@ -26,10 +26,12 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         ...
         """
         converted_time = datetime(
-            2000, 1, time_obj[0]+1, time_obj[1], time_obj[2]) - timedelta(minutes=early)
+            2000, 1, time_obj[0]+1, time_obj[1], time_obj[2])
         time_now = time.gmtime()
         time_now = datetime(2000, 1, time_now.tm_wday+1,
-                            time_now.tm_hour, time_now.tm_min)
+                            time_now.tm_hour, time_now.tm_min) + timedelta(minutes=early)
+        if time_now.day == 7:
+            time_now.day == 1
         if converted_time < time_now:
             return Result(False)
         elif early != 0:
