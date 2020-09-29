@@ -27,6 +27,7 @@ class Result:
     photos: [str] = None
     gear_data: GearData = None
     obj: object = None
+    code: int = 0
 
 
 @dataclass

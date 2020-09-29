@@ -1,6 +1,6 @@
 .env
 *.json
-*.db
+gear_bot_db.db
 /screenshots/*
 *.py[cod]
 !/screenshots/example.png

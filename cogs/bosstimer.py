@@ -6,6 +6,9 @@ from models import Result
 
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
+    #TODO swap to single array based on time, instead of boss
+    #use self var to track progression, init to find location after restart
+    #different look ahead values depending on boss
     BOSS_SCHEDULE = {
         'garmoth': [[0, 0, 0], [2, 3, 15], [4, 3, 15]],
         'vell': [[3, 0, 0], [6, 21, 0]],

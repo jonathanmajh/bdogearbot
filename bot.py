@@ -13,7 +13,7 @@ DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
-initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin', 'cogs.bosstimer']
+initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin', 'cogs.bosstimer', 'cogs.items']
 
 bot = commands.Bot(command_prefix='?',
                    description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')

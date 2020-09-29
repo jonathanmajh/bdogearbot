@@ -8,9 +8,10 @@ from dotenv import load_dotenv
 load_dotenv()
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
+ITEM_DB_PATH = f'{HOME_PATH}bdo_items.db'
 
 
-def create_connection():
+def create_connection(DB_PATH):
     """ create a database connection to a SQLite database """
     conn = None
     try:
@@ -21,11 +22,69 @@ def create_connection():
     return conn
 
 
+def get_item_by_id(args):
+    conn = create_connection(ITEM_DB_PATH)
+    cur = conn.cursor()
+    sql = f' ?'
+    sql ="SELECT item_id, item_name FROM item_names WHERE item_id IN ({seq})".format(
+    seq=','.join(['?']*len(args)))
+    cur.execute(sql, args)
+    rows = cur.fetchall()
+    return rows
+
+def item_exact_search(query:str):
+    conn = create_connection(ITEM_DB_PATH)
+    cur = conn.cursor()
+    sql = f'SELECT item_id, item_name FROM item_names WHERE item_name="{query}";'
+    cur.execute(sql, )
+    rows = cur.fetchall()
+    return rows
+
+def item_like_search(query:str):
+    conn = create_connection(ITEM_DB_PATH)
+    cur = conn.cursor()
+    sql = f'SELECT item_id, item_name FROM item_names WHERE lcase_name LIKE "%{query}%";'
+    cur.execute(sql, )
+    rows = cur.fetchall()
+    return rows
+
+def item_phone_search(query):
+    conn = create_connection(ITEM_DB_PATH)
+    cur = conn.cursor()
+    sql = f'SELECT item_id, item_name FROM item_names WHERE pri_phone LIKE "%{query[0]}%" OR sec_phone LIKE "%{query[0]}%"'
+    if query[1] != '':
+        sql = f'{sql} OR pri_phone LIKE "%{query[1]}%" OR sec_phone LIKE "%{query[1]}%"'
+    print(sql)
+    cur.execute(sql, )
+    rows = cur.fetchall()
+    return rows
+
+def item_leven_search(query):
+    conn = create_connection(ITEM_DB_PATH)
+    conn.enable_load_extension(True)
+    conn.load_extension("./spellfix1.so")
+    conn.enable_load_extension(False)
+    cur = conn.cursor()
+    cur.execute(f"SELECT rowid, word FROM leven_name WHERE word MATCH '{query}' AND top=5")
+    rows = cur.fetchall()
+    return rows
+
+def item_no_phone():
+    """gets all entries with no primary metaphone"""
+    conn = create_connection(ITEM_DB_PATH)
+    cur = conn.cursor()
+    sql = f'SELECT item_id, lcase_name FROM item_names;'
+    cur.execute(sql, )
+    rows = cur.fetchall()
+    return rows
+
+
 def table_check():
     """
     Check if member_gear table exists and creates if necessary
     """
-    conn = create_connection()
+
+    conn = create_connection(DB_PATH)
     if conn is not None:
         cur = conn.cursor()
         cur.execute('''
@@ -87,7 +146,7 @@ CREATE TABLE IF NOT EXISTS server_messages (
 
 
 def add_server(server_info):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     sql = '''insert or replace into server_info(server_id,server_owner,
              requests_made,general_channel_id,gear_photo_id,gear_talk_id)
              values(?,?,?,?,?,?)'''
@@ -100,7 +159,7 @@ def add_server(server_info):
 
 
 def update_server_requests(server_id):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     sql = f'''UPDATE server_info SET requests_made = 
     (SELECT(SELECT requests_made FROM server_info WHERE server_id = {server_id})-1)
     WHERE server_id = {server_id};'''
@@ -113,7 +172,7 @@ def update_server_requests(server_id):
     return rows
 
 def reset_server_requests(new_limit):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     sql = f'UPDATE server_info SET requests_made = {new_limit}'
     cur = conn.cursor()
     cur.execute(sql, )
@@ -121,7 +180,7 @@ def reset_server_requests(new_limit):
     return True
 
 def update_gear(gear_data):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     sql = '''insert or replace into member_gear(user_id,gear_type,
              gear_photo,awak_ap,succ_ap,dp,gs,family_name,server_id,datestamp)
              values(?,?,?,?,?,?,?,?,?,?) '''
@@ -135,7 +194,7 @@ def update_gear(gear_data):
 
 
 def find_gear(find):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql = f'SELECT * FROM member_gear WHERE user_id={find[0]}'
     if len(find) == 2:
@@ -145,7 +204,7 @@ def find_gear(find):
     return rows
 
 def del_gear(find):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql_del = f'DELETE FROM member_gear WHERE user_id={find[0]}'
     sql_find = f'SELECT gear_photo FROM member_gear WHERE user_id={find[0]}'
@@ -161,7 +220,7 @@ def del_gear(find):
     return rows
 
 def find_average(find):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql = f'SELECT gs FROM member_gear WHERE server_id={find[0]}'
     if len(find) == 2:
@@ -172,7 +231,7 @@ def find_average(find):
 
 
 def find_all(find):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql = f'SELECT * FROM member_gear WHERE server_id={find[0]}'
     if len(find) == 2:
@@ -184,7 +243,7 @@ def find_all(find):
 
 
 def add_server_message(server_id, message, user_id):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     sql = 'INSERT INTO server_messages(server_id,message,user_id) values (?,?,?)'
     cur = conn.cursor()
     payload = (server_id, message, user_id)
@@ -194,7 +253,7 @@ def add_server_message(server_id, message, user_id):
 
 
 def get_server_message(server_id, all):
-    conn = create_connection()
+    conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql = f'SELECT message, user_id FROM server_messages WHERE server_id={server_id};'
     cur.execute(sql,)
