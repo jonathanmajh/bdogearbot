@@ -3,6 +3,20 @@ from datetime import date
 
 
 @dataclass
+class ItemInfo:
+    item_id: int
+    item_url: str
+    item_type: str
+    item_desc: str
+    elvl: int
+    item_name: str = None
+    elvl_info: object = None
+    item_sockets: int = 0
+    mp_count: int = 0
+    mp_price: int = 0
+    # item_icon: str = None
+
+@dataclass
 class SimpleGearData:
     gear_type: str
     family_name: str
