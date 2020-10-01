@@ -73,3 +73,5 @@ def get_item_info(item_id, elvl):
     return Result(True, obj=item)
 # exclusive = item_desc.find(string=re.compile('Exclusive*'))
 # html_info = soup.find()
+def all_item_scrapper():
+    pass

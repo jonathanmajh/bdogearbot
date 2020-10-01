@@ -1,22 +1,3 @@
-#     conn = create_connection(ITEM_DB_PATH)
-#     if conn is not None:
-#         cur = conn.cursor()
-#         cur.execute('''
-#         SELECT name FROM sqlite_master WHERE type='table' AND name='item_names';
-#         ''')
-#         row = cur.fetchall()
-#         if len(row) == 0:
-#             print('creating item table')
-#             cur.execute('''
-# CREATE TABLE IF NOT EXISTS item_names (
-#     item_id int PRIMARY KEY,
-#     item_name text NOT NULL,
-#     pri_phone text,
-#     sec_phone text,
-#     lcase_name text
-# );''')
-#         else:
-#             print('items table already exists')
 
 # def batch_update_phone(params):
 #     """[[pri_phone, sec_phone, item_id], ...]"""
