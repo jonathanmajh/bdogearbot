@@ -9,6 +9,7 @@ class ItemInfo:
     item_type: str
     item_desc: str
     elvl: int
+    item_icon: str = None
     item_name: str = None
     elvl_info: object = None
     item_sockets: int = 0

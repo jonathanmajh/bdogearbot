@@ -37,18 +37,17 @@ class ItemCog(commands.Cog, name='Items'):
         enchant = get_enchant_lvl(split_query[-1])
         enchant_lvl = enchant.code
         enchant = enchant.status
+        
         if split_query[0].isdigit() and ((len(split_query) == 2 and enchant) or len(split_query) == 1):
             print(split_query)
             item = get_item_info(split_query[0], enchant_lvl)
             if item.status:
                 item = item.obj
                 message = format_item_info(item)
-                message_send = f'{message}Loading Marketplace Information...```'
-                msg = await ctx.send(message_send)
+                msg = await ctx.send(embed=message)
                 mp = get_mp_info(item)
-                message_mp = format_mp_info(mp)
-                message_send = f'{message}{message_mp}'
-                await msg.edit(content=message_send)
+                mp_embed = format_mp_info(mp, message)
+                await msg.edit(embed=mp_embed)
             else:
                 await ctx.send(item.message)
         else:
@@ -61,12 +60,10 @@ class ItemCog(commands.Cog, name='Items'):
                     if item.status:
                         item = item.obj
                         message = format_item_info(item)
-                        message_send = f'{message}Loading Marketplace Information...```'
-                        msg = await ctx.send(message_send)
+                        msg = await ctx.send(embed=message)
                         mp = get_mp_info(item)
-                        message_mp = format_mp_info(mp)
-                        message_send = f'{message}{message_mp}'
-                        await msg.edit(content=message_send)
+                        mp_embed = format_mp_info(mp, message)
+                        await msg.edit(embed=mp_embed)
                 else:
                     response = f'''
 ```{result.message}
@@ -80,6 +77,11 @@ class ItemCog(commands.Cog, name='Items'):
                 response = result.message
                 await ctx.send(response)
 
+def placeholder_mp_info():
+    embed = discord.Embed(title='Marketplace Info')
+    embed.set_author(name='BDO MP Info', icon_url='https://cdn.discordapp.com/app-icons/754046514573344788/1685046eb02a2bd9c62df89c4849d765.png')
+    embed.add_field(name='Loading...', value='Loading Marketplace Information...')
+    return embed
 
 def setup(bot):
     bot.add_cog(ItemCog(bot))

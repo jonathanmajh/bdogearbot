@@ -41,22 +41,26 @@ def get_item_info(item_id, elvl):
     except AttributeError:
         enchantment_info = None
     else:
-        enchantment_info = enchantment_info[str(elvl)]
+        try:
+            enchantment_info = enchantment_info[str(elvl)]
+        except KeyError:
+            enchantment_info = enchantment_info['0']
+        
     # access enchantment level as a string not int...
 
     item_desc = soup.find('hr', 'tooltiphr').parent
     item_type = item_stats.find('span', 'category_text').get_text()
     item_name = soup.find(id='item_name').text 
+    icon_url = f'https://bdocodex.com{soup.find("img", "item_icon").attrs["src"]}'
     item_tooltip = ''
     i = 0
-    desc = item_desc.contents
+    # desc = item_desc.contents
+    desc = [text for text in item_desc.stripped_strings]
     while i < len(desc):
-        if type(desc[i]) != type(str):
-            pass
-        elif re.search('Exclusive:*', desc[i]):
+        if 'Exclusive:' == desc[i][:10]:
             item_tooltip = f'{item_tooltip}{desc[i]}\n'
-        elif desc[i].string == '\r\n– Description:':
-            item_tooltip = f'{item_tooltip}{desc[i+2]}\n' 
+        elif desc[i] == '– Description:':
+            item_tooltip = f'{item_tooltip}{desc[i+1]}\n' 
         i = i + 1
     # descs = [text for text in item_desc.stripped_strings]
     # for text in item_desc.stripped_strings:
@@ -64,7 +68,7 @@ def get_item_info(item_id, elvl):
 
 # description = item_desc.contents[item_desc.contents.index('\r\n– Description:')+2]
     sockets = len(item_desc.find_all('span', 'stone_socket'))
-    item = ItemInfo(item_id=item_id, item_url=URL, elvl=elvl, elvl_info=enchantment_info,
+    item = ItemInfo(item_id=item_id, item_url=URL, elvl=elvl, elvl_info=enchantment_info, item_icon=icon_url,
                     item_type=item_type, item_desc=item_tooltip, item_sockets=sockets, item_name=item_name)
     return Result(True, obj=item)
 # exclusive = item_desc.find(string=re.compile('Exclusive*'))

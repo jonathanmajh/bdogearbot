@@ -1,5 +1,6 @@
 import re
 from bs4 import BeautifulSoup
+import discord
 
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
@@ -54,43 +55,54 @@ def get_enchant_lvl(lvl):
 
 
 def format_item_info(item: ItemInfo):
-    levels = ['I ', 'II ', 'III ', 'IV ', 'V ']
+    levels = ['I', 'II', 'III', 'IV', 'V']
     if item.elvl == 0:
         level = ''
     elif item.elvl <= 15:
-        level = f'+{str(item.elvl)} '
+        level = f'+{str(item.elvl)}'
     else:
         level = levels[item.elvl-16]
-    message = f'```{level}{item.item_name.strip()}\nID: {item.item_id}\n'
-    message = f'{message}Item Type: {item.item_type}\n'
+    embed = discord.Embed(title=f'{level} {item.item_name.strip()}', url=item.item_url, description=item.item_desc)
+    embed.set_author(name='BDO Item Info', icon_url='https://cdn.discordapp.com/app-icons/754046514573344788/1685046eb02a2bd9c62df89c4849d765.png')
+    embed.set_thumbnail(url=item.item_icon)
+    embed.add_field(name='Item ID', value=f'{item.item_id}')
+    embed.add_field(name='Item Type', value=f'{item.item_type}')
+    # message = f'{item.item_url}\n```{level}{item.item_name.strip()}\nID: {item.item_id}\n'
+    # message = f'{message}Item Type: {item.item_type}\n'
     if item.item_sockets > 0:
-        message = f'{message}Crystal Slots: {item.item_sockets}\n'
-    message = f'{message}Item Stats:\n'
-    if item.elvl_info['damage'] != 0:
-        message = f'{message}AP: {item.elvl_info["damage"]}\n'
-    if item.elvl_info['defense'] != 0:
-        message = f'{message}DP: {item.elvl_info["defense"]}\n'
-    if item.elvl_info['accuracy'] != 0:
-        message = f'{message}Accuracy: {item.elvl_info["accuracy"]}\n'
-    if item.elvl_info['evasion'] != 0:
-        message = f'{message}Evasion: {item.elvl_info["evasion"]}\n'
-    if item.elvl_info['dreduction'] != 0:
-        message = f'{message}Damage Reduction: {item.elvl_info["dreduction"]}\n'
-    message = f'{message}_________________________________________\n'
-    if item.elvl_info['edescription'] != 0:
-        markup = item.elvl_info['edescription']
-        soup = BeautifulSoup(markup, 'html.parser')
-        for text in soup.stripped_strings:
-            message = f'{message}{text}\n'
-    message = f'{message}_________________________________________\n'
-    if item.elvl_info.get('need_enchant_item_name', 0) != 0:
-        message = f'{message}Enchancement:\n{item.elvl_info["need_enchant_item_name"]}\n'
-    if item.elvl_info.get('enchant_chance', 0) != 0:
-        message = f'{message}Base Enchance Chance: {item.elvl_info["enchant_chance"]}\n'
-    message = f'{message}{item.item_desc}\n'
-    return message
+        embed.add_field(name='Crystal Slots', value=f'{item.item_sockets}')
+        # message = f'{message}Crystal Slots: {item.item_sockets}\n'
+    if item.elvl_info:
+        message = '' #f'{message}Item Stats:\n'
+        if item.elvl_info['damage'] != 0:
+            message = f'{message}AP: {item.elvl_info["damage"]}\n'
+        if item.elvl_info['defense'] != 0:
+            message = f'{message}DP: {item.elvl_info["defense"]}\n'
+        if item.elvl_info['accuracy'] != 0:
+            message = f'{message}Accuracy: {item.elvl_info["accuracy"]}\n'
+        if item.elvl_info['evasion'] != 0:
+            message = f'{message}Evasion: {item.elvl_info["evasion"]}\n'
+        if item.elvl_info['dreduction'] != 0:
+            message = f'{message}Damage Reduction: {item.elvl_info["dreduction"]}\n'
+        # message = f'{message}_________________________________________\n'
+        if item.elvl_info['edescription'] != 0:
+            markup = item.elvl_info['edescription']
+            soup = BeautifulSoup(markup, 'html.parser')
+            for text in soup.stripped_strings:
+                message = f'{message}{text}\n'
+        embed.add_field(name='Item Stats', value=message, inline=False)
+        # message = f'{message}_________________________________________\n'
+        if item.elvl_info.get('need_enchant_item_name', 0) != 0:
+            message = ''
+            message = f'{message}Enchancement:\n{item.elvl_info["need_enchant_item_name"]}\n'
+        if item.elvl_info.get('enchant_chance', 0) != 0:
+            message = f'{message}Base Enchance Chance: {item.elvl_info["enchant_chance"]}\n'
+            embed.add_field(name='Enhancement', value=message, inline=False)
+    embed.add_field(name='Marketplace Info', value='Loading Marketplace Information...', inline=False)
+    # message = f'{message}{item.item_desc}\n'
+    return embed
 
-def format_mp_info(item_info):
+def format_mp_info(item_info, embed):
     # levels = ['I ', 'II ', 'III ', 'IV ', 'V ']
     item = item_info.obj
     # if item.elvl == 0:
@@ -100,7 +112,8 @@ def format_mp_info(item_info):
     # else:
     #     level = levels[item.elvl-16]
     # message = f'```{level}{item.item_name.strip()}\nID: {item.item_id}\n'
-    message = 'Market Place Information:\n'
+    # message = 'Market Place Information:\n'
+    message = ''
     if item_info.status:
         if item_info.message:
             message = f'{message}{item_info.message}\n'
@@ -109,7 +122,8 @@ def format_mp_info(item_info):
         
     else:
         message = f'{message}{item_info.message}'
-    return f'{message}```'
+    embed.set_field_at(index=len(embed.fields)-1, name='Current Marketplace Data', value=message, inline=False)
+    return embed
 
 # https://www.sqlite.org/spellfix1.html sqlite Levenshtein
 # https://pypi.org/project/Metaphone/ python double metaphone
