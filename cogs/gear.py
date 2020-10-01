@@ -98,7 +98,7 @@ class GearCog(commands.Cog, name='Gear'):
     async def guild_average(self, ctx, gear_type=None):
         result = get_average(ctx.guild.id, gear_type)
         if result.status:
-            response = f'Guild GS Average is: {result.message}'
+            response = f'Guild GS Average is: {format(result.message, '.1f')}'
         else:
             response = result.message
         await ctx.send(response)
