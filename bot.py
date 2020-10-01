@@ -16,7 +16,7 @@ version = subprocess.check_output(
 initial_extensions = ['cogs.fun', 'cogs.gear',
                       'cogs.admin', 'cogs.bosstimer', 'cogs.items', 'cogs.error_handler']
 
-bot = commands.Bot(command_prefix='~',
+bot = commands.Bot(command_prefix='?',
                    description=f'BDOBot:\nAutomagically read GS from gear photos.\nGet item info and MP prices.\nv:{version}')
 bot.owner_id = 152611107633233920
 
