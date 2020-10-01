@@ -38,8 +38,8 @@ def get_item_by_id(args):
 def item_exact_search(query: str):
     conn = create_connection(ITEM_DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT item_id, item_name FROM item_names WHERE item_name="{query}" ORDER BY length(item_name) ASC;'
-    cur.execute(sql, )
+    sql = 'SELECT item_id, item_name FROM item_names WHERE item_name=? ORDER BY length(item_name) ASC;'
+    cur.execute(sql, (query, ))
     rows = cur.fetchall()
     return rows
 
@@ -47,8 +47,8 @@ def item_exact_search(query: str):
 def item_like_search(query: str):
     conn = create_connection(ITEM_DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT item_id, item_name FROM item_names WHERE lcase_name LIKE "%{query}%" ORDER BY length(item_name) ASC;'
-    cur.execute(sql, )
+    sql = f'SELECT item_id, item_name FROM item_names WHERE lcase_name LIKE ? ORDER BY length(item_name) ASC;'
+    cur.execute(sql, (f'%{query}%', ))
     rows = cur.fetchall()
     return rows
 
@@ -56,23 +56,23 @@ def item_like_search(query: str):
 def item_phone_search(query):
     conn = create_connection(ITEM_DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT item_id, item_name FROM item_names WHERE pri_phone LIKE "%{query[0]}%" OR sec_phone LIKE "%{query[0]}%"'
+    sql = f'SELECT item_id, item_name FROM item_names WHERE pri_phone LIKE ? OR sec_phone LIKE ?'
+    queries = (f'%{query[0]}%', f'%{query[0]}%')
     if query[1] != '':
-        sql = f'{sql} OR pri_phone LIKE "%{query[1]}%" OR sec_phone LIKE "%{query[1]}%"'
-    print(sql)
-    cur.execute(sql, )
+        sql = f'{sql} OR pri_phone LIKE ? OR sec_phone LIKE ?'
+        queries = (f'%{query[0]}%', f'%{query[0]}%', f'%{query[1]}%', f'%{query[1]}%', )
+    cur.execute(sql, queries)
     rows = cur.fetchall()
     return rows
 
 
-def item_leven_search(query):
+def item_leven_search(query: str):
     conn = create_connection(ITEM_DB_PATH)
     conn.enable_load_extension(True)
     conn.load_extension("./bin/spellfix1.so")
     conn.enable_load_extension(False)
     cur = conn.cursor()
-    cur.execute(
-        f"SELECT rowid, word FROM leven_name WHERE word MATCH '{query}'")
+    cur.execute("SELECT rowid, word FROM leven_name WHERE word MATCH ?", (query,))
     rows = cur.fetchall()
     return rows
 
@@ -182,9 +182,9 @@ def update_server_requests(server_id):
 
 def reset_server_requests(new_limit):
     conn = create_connection(DB_PATH)
-    sql = f'UPDATE server_info SET requests_made = {new_limit}'
+    sql = f'UPDATE server_info SET requests_made = ?'
     cur = conn.cursor()
-    cur.execute(sql, )
+    cur.execute(sql, (new_limit, ))
     conn.commit()
     return True
 
@@ -206,10 +206,12 @@ def update_gear(gear_data):
 def find_gear(find):
     conn = create_connection(DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT * FROM member_gear WHERE user_id={find[0]}'
+    sql = f'SELECT * FROM member_gear WHERE user_id=?'
+    queries = (find[0],)
     if len(find) == 2:
-        sql = sql + f' AND gear_type="{find[1]}"'
-    cur.execute(sql, )
+        sql = sql + f' AND gear_type=?'
+        queries = (find[0], find[1])
+    cur.execute(sql, queries)
     rows = cur.fetchall()
     return rows
 
@@ -219,13 +221,15 @@ def del_gear(find):
     cur = conn.cursor()
     sql_del = f'DELETE FROM member_gear WHERE user_id={find[0]}'
     sql_find = f'SELECT gear_photo FROM member_gear WHERE user_id={find[0]}'
+    queries = (find[0],)
     if len(find) == 2:
         sql_del = sql_del + f' AND gear_type="{find[1]}"'
         sql_find = sql_find + f' AND gear_type="{find[1]}"'
-    cur.execute(sql_find, )
+        queries = (find[0], find[1])
+    cur.execute(sql_find, queries)
     rows = cur.fetchall()
 
-    cur.execute(sql_del, )
+    cur.execute(sql_del, queries)
     conn.commit()
 
     return rows
