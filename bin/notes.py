@@ -22,3 +22,5 @@
 #             dmp[1]) > 0 else None, empty_mp[0]])
 #     print('now sending data to db')
 #     batch_update_phone(created_mps)
+
+# pip3 install -r requirements.txt
