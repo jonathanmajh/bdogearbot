@@ -38,7 +38,7 @@ def get_item_by_id(args):
 def item_exact_search(query: str):
     conn = create_connection(ITEM_DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT item_id, item_name FROM item_names WHERE item_name="{query}";'
+    sql = f'SELECT item_id, item_name FROM item_names WHERE item_name="{query}" ORDER BY length(item_name) ASC;'
     cur.execute(sql, )
     rows = cur.fetchall()
     return rows
@@ -47,7 +47,7 @@ def item_exact_search(query: str):
 def item_like_search(query: str):
     conn = create_connection(ITEM_DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT item_id, item_name FROM item_names WHERE lcase_name LIKE "%{query}%";'
+    sql = f'SELECT item_id, item_name FROM item_names WHERE lcase_name LIKE "%{query}%" ORDER BY length(item_name) ASC;'
     cur.execute(sql, )
     rows = cur.fetchall()
     return rows
@@ -68,11 +68,11 @@ def item_phone_search(query):
 def item_leven_search(query):
     conn = create_connection(ITEM_DB_PATH)
     conn.enable_load_extension(True)
-    conn.load_extension("./spellfix1.so")
+    conn.load_extension("./bin/spellfix1.so")
     conn.enable_load_extension(False)
     cur = conn.cursor()
     cur.execute(
-        f"SELECT rowid, word FROM leven_name WHERE word MATCH '{query}' AND top=5")
+        f"SELECT rowid, word FROM leven_name WHERE word MATCH '{query}'")
     rows = cur.fetchall()
     return rows
 

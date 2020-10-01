@@ -65,14 +65,14 @@ class ItemCog(commands.Cog, name='Items'):
                         mp_embed = format_mp_info(mp, message)
                         await msg.edit(embed=mp_embed)
                 else:
-                    response = f'''
-```{result.message}
-| Item ID | Item Name'''
-                    for result in result.obj:
-                        response = f'''{response}
-|{str(result[0]).ljust(9)}| {result[1]}'''
-                    response = f'{response}```'
-                    await ctx.send(response)
+                    response = f'''```{result.message}\n| Item ID | Item Name\n'''
+                    count = len(result.obj)
+                    for index, result in enumerate(result.obj):
+                        response = f'''{response}| {str(result[0]).ljust(8)}| {result[1]}\n'''
+                        if index > 20:
+                            response = f'{response}Only 20 suggestions are shown out of {count}'
+                            break
+                    await ctx.send(f'{response}```')
             else:
                 response = result.message
                 await ctx.send(response)
