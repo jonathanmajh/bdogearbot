@@ -1,10 +1,10 @@
 # bot.py
 import os
-import discord
 import subprocess
-from dotenv import load_dotenv
 
+import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -13,10 +13,11 @@ DB_PATH = f'{HOME_PATH}gear_bot_db.db'
 version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
-initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.admin', 'cogs.bosstimer', 'cogs.items']
+initial_extensions = ['cogs.fun', 'cogs.gear',
+                      'cogs.admin', 'cogs.bosstimer', 'cogs.items']
 
 bot = commands.Bot(command_prefix='~',
-                   description=f'BDOGearBot: Automagically read GS from gear photos. v:{version}')
+                   description=f'BDOBot:\nAutomagically read GS from gear photos.\nGet item info and MP prices.\nv:{version}')
 bot.owner_id = 152611107633233920
 
 if __name__ == '__main__':

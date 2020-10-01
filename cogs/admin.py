@@ -1,10 +1,11 @@
 import os
-import discord
 import shutil
 
+import discord
+from bin.database import add_server, reset_server_requests, table_check
+from bin.models import ServerInfo
 from discord.ext import commands
-from database import table_check, add_server, reset_server_requests
-from models import ServerInfo
+
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -23,7 +24,7 @@ class AdminCog(commands.Cog):
                 await channel.send('Hello There...\nPlease tell a manager to set me up by running ?setup')
             break
 
-    @commands.command(name='setup')
+    @commands.command(name='setup') #TODO change to seperate messages
     async def setup_server(self, ctx, *, args=None):
         """
         Function to setup bot when first joining a server
@@ -39,7 +40,8 @@ Ex. "?setup general=guild-general photo=gear-photo"
 Ex. "?setup default"'
 ```'''
         elif args == 'default':
-            server_info = ServerInfo(server_id=ctx.guild.id, server_owner=ctx.author.id)
+            server_info = ServerInfo(
+                server_id=ctx.guild.id, server_owner=ctx.author.id)
             for channel in ctx.guild.text_channels:
                 if channel.permissions_for(ctx.guild.me).send_messages:
                     server_info.general_channel_id = channel.id
@@ -50,10 +52,9 @@ Ex. "?setup default"'
             response = 'unimplimented (:'
         await ctx.send(response)
 
-
     @commands.command(name='maint', hidden=True)
     @commands.is_owner()
-    async def maintenance(self, ctx, state): #start/end
+    async def maintenance(self, ctx, state):  # start/end
         await self.bot.change_presence(activity=discord.Game('Currently Undergoing Maintence!'))
         await ctx.send('Starting maintence mode...\nUnloading extensions...')
         self.bot.unload_extension('cogs.fun')
@@ -67,14 +68,14 @@ Ex. "?setup default"'
         shutil.copytree(f'{source_dir}screenshots/', f'{dest_dir}screenshots/')
         await ctx.send('Finished backing up data...\nMaintence prep finished!')
 
-
     @commands.command(name='resetlimit', hidden=True)
     @commands.is_owner()
-    async def reset_limit(self, ctx, new_limit:int): #int 
+    async def reset_limit(self, ctx, new_limit: int):  # int
         await self.bot.change_presence(activity=discord.Game('Resetting the rate limit for everyone <3'))
         reset_server_requests(new_limit)
         await ctx.send(f'Reset remaining requests for all guilds to {new_limit}')
         await self.bot.change_presence(activity=discord.Game('Black Spirit Notice Me!'))
+
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))

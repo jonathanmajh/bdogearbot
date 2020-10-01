@@ -1,9 +1,11 @@
-import os
-import discord
 import asyncio
+import os
+
+import discord
+from bin.processing import (add_gear, get_all, get_average, get_gear,
+                            remove_gear)
 from discord.ext import commands
 from discord.utils import get
-from processing import add_gear, get_gear, get_average, get_all, remove_gear
 
 
 class GearCog(commands.Cog, name='Gear'):
@@ -62,7 +64,6 @@ class GearCog(commands.Cog, name='Gear'):
             print('removing gear')
             result = remove_gear(ctx.author.id, gear_type)
             await channel.send(result.message)
-
 
     @commands.command(name='nouver')
     async def add_gear_nouver(self, ctx):

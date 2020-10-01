@@ -1,10 +1,10 @@
-import discord
 import asyncio
-import re
-from discord.ext import commands
 
-from scraper import get_item_info, get_mp_info
-from item_processing import combo_search, get_enchant_lvl, format_item_info, format_mp_info
+import discord
+from bin.item_processing import (combo_search, format_item_info,
+                                 format_mp_info, get_enchant_lvl)
+from bin.scraper import get_item_info, get_mp_info
+from discord.ext import commands
 
 
 class ItemCog(commands.Cog, name='Items'):
@@ -37,7 +37,7 @@ class ItemCog(commands.Cog, name='Items'):
         enchant = get_enchant_lvl(split_query[-1])
         enchant_lvl = enchant.code
         enchant = enchant.status
-        
+
         if split_query[0].isdigit() and ((len(split_query) == 2 and enchant) or len(split_query) == 1):
             print(split_query)
             item = get_item_info(split_query[0], enchant_lvl)
@@ -77,11 +77,15 @@ class ItemCog(commands.Cog, name='Items'):
                 response = result.message
                 await ctx.send(response)
 
+
 def placeholder_mp_info():
     embed = discord.Embed(title='Marketplace Info')
-    embed.set_author(name='BDO MP Info', icon_url='https://cdn.discordapp.com/app-icons/754046514573344788/1685046eb02a2bd9c62df89c4849d765.png')
-    embed.add_field(name='Loading...', value='Loading Marketplace Information...')
+    embed.set_author(name='BDO MP Info',
+                     icon_url='https://cdn.discordapp.com/app-icons/754046514573344788/1685046eb02a2bd9c62df89c4849d765.png')
+    embed.add_field(name='Loading...',
+                    value='Loading Marketplace Information...')
     return embed
+
 
 def setup(bot):
     bot.add_cog(ItemCog(bot))

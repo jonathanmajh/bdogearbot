@@ -1,8 +1,9 @@
 import os
-import discord
-from discord.ext import commands
 from random import choice
-from database import add_server_message, get_server_message
+
+import discord
+from bin.database import add_server_message, get_server_message
+from discord.ext import commands
 
 
 class ForFunCog(commands.Cog, name='4FUNctions'):
