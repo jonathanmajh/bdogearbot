@@ -27,14 +27,15 @@ def combo_search(query: str):
     dmp = doublemetaphone(query)
     if len(dmp[0]) != 0:
         result = item_phone_search(dmp)
+        print(dmp, query)
         if len(result) > 0:
             return Result(True, message='No match found, please select from similarly spelt items using item ID or try again (SD)', obj=result)
     result = item_leven_search(query)
     if len(result) > 0:
         ids = []
         for res in result:
-            ids.append(res[0])
-        result = get_item_by_id(ids)
+            ids.append([res[0], res[1]])
+        # result = get_item_by_id(ids)
         return Result(True, message='No match found, please select from similarly spelt items using item ID or try again (LD)', obj=result)
     return Result(False, message='No item found check spelling or use item number')
 

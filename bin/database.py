@@ -72,7 +72,8 @@ def item_leven_search(query: str):
     conn.load_extension("./bin/spellfix1.so")
     conn.enable_load_extension(False)
     cur = conn.cursor()
-    cur.execute("SELECT rowid, word FROM leven_name WHERE word MATCH ?", (query,))
+    cur.execute("SELECT item_id, item_name, editdist3(lcase_name, ?) AS edit_dist FROM item_names ORDER BY edit_dist ASC", (query,))
+    # cur.execute("SELECT rowid, word FROM leven_name WHERE word MATCH ?", (query,))
     rows = cur.fetchall()
     return rows
 
