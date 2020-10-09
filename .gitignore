@@ -2,5 +2,6 @@
 *.json
 gear_bot_db.db
 /screenshots/*
+__pycache__/
 *.py[cod]
 !/screenshots/example.png
