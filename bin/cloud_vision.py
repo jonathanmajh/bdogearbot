@@ -15,10 +15,10 @@ def detect_text(gear_data: GearData):
     texts = response.text_annotations
     print('Texts:')
     scores_found = 0
-    try:
+    if response.error.message:
+        return Result(False, f'Error encountered: {response.error.message}')
+    else:
         print(texts[0].description)
-    except Exception:
-        return Result(False, 'Cannot detect GS please upload a different image')
     split_text = texts[0].description.split('\n')
     for count, text in enumerate(split_text):
         if fnmatch(text, '*Attack*'):
