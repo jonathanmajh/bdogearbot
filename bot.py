@@ -10,13 +10,20 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
+DEBUG = os.getenv('DEBUG')
+
 version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
 initial_extensions = ['cogs.fun', 'cogs.gear',
                       'cogs.admin', 'cogs.bosstimer', 'cogs.items', 'cogs.error_handler']
 
-bot = commands.Bot(command_prefix='?',
+
+if DEBUG:
+    prefix = '~'
+else:
+    prefix = '?'
+bot = commands.Bot(command_prefix=prefix,
                    description=f'BDOBot:\nAutomagically read GS from gear photos.\nGet item info and MP prices.\nv:{version}')
 bot.owner_id = 152611107633233920
 
