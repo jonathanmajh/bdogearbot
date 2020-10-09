@@ -220,12 +220,12 @@ def find_gear(find):
 def del_gear(find):
     conn = create_connection(DB_PATH)
     cur = conn.cursor()
-    sql_del = f'DELETE FROM member_gear WHERE user_id={find[0]}'
-    sql_find = f'SELECT gear_photo FROM member_gear WHERE user_id={find[0]}'
+    sql_del = f'DELETE FROM member_gear WHERE user_id=?'
+    sql_find = f'SELECT gear_photo FROM member_gear WHERE user_id=?'
     queries = (find[0],)
     if len(find) == 2:
-        sql_del = sql_del + f' AND gear_type="{find[1]}"'
-        sql_find = sql_find + f' AND gear_type="{find[1]}"'
+        sql_del = sql_del + f' AND gear_type=?'
+        sql_find = sql_find + f' AND gear_type=?'
         queries = (find[0], find[1])
     cur.execute(sql_find, queries)
     rows = cur.fetchall()
