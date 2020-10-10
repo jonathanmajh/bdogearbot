@@ -69,6 +69,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     ]
 
     BOSSES = ['vell', 'garmoth', 'karanda', 'kzarka', 'kutum', 'nouver', 'quint', 'muraka']
+    AKA = {'cronmoth': 'Garmoth', 'garmoth': 'Garmoth'} #map of boss alias
     # wday, hour, minute in UTC
 
     def __init__(self, bot):
@@ -115,7 +116,6 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
 
     @tasks.loop(seconds=60.0)
     async def boss_nagging(self):
-        print(f'checking {self.next_boss_i} {datetime.now()}')
         #garmoth
         if 'garmoth' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 30).status:
@@ -123,7 +123,6 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
                 channel = self.bot.get_channel(285232745150677013)
                 message = '@!150050397883596800> Garmoth in 30 minutes CTG when?????'
                 await channel.send(message)
-
         #vell
         elif 'vell' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 45).status:
@@ -131,14 +130,16 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
                 channel = self.bot.get_channel(285232745150677013)
                 message = 'Vell in 45 minutes find your nearest **friendly** officer for ride'
                 await channel.send(message)
-
         else:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 10).status:
                 print('sending normal spawn message')
                 channel = self.bot.get_channel(285232745150677013)
-                message = f'{str(self.BOSS_SCHEDULE[self.next_boss_i][1])} in 10 minutes!!'
+                response = f'```Spawning in 10 minutes!!!'
+                for boss in self.BOSS_SCHEDULE[self.next_boss_i][1]:
+                    response = f'{response}\n{boss}'
+                response = f'{response}```'
                 self.update_state()
-                await channel.send(message)
+                await channel.send(response)
 
     @boss_nagging.before_loop
     async def before_nagging(self):
