@@ -120,20 +120,20 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         if 'garmoth' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 30).status:
                 print('sending garmoth spawn message')
-                channel = self.bot.get_channel(285232745150677013)
-                message = '@!150050397883596800> Garmoth in 30 minutes CTG when?????'
+                channel = self.bot.get_channel(715760182201679883)
+                message = '<@!150050397883596800> Garmoth in 30 minutes CTG when?????'
                 await channel.send(message)
         #vell
         elif 'vell' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 45).status:
                 print('sending garmoth spawn message')
-                channel = self.bot.get_channel(285232745150677013)
+                channel = self.bot.get_channel(715760182201679883)
                 message = 'Vell in 45 minutes find your nearest **friendly** officer for ride'
                 await channel.send(message)
         else:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 10).status:
                 print('sending normal spawn message')
-                channel = self.bot.get_channel(285232745150677013)
+                channel = self.bot.get_channel(755211391824167012)
                 response = f'```Spawning in 10 minutes!!!'
                 for boss in self.BOSS_SCHEDULE[self.next_boss_i][1]:
                     response = f'{response}\n{boss}'
