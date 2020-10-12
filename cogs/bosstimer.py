@@ -127,7 +127,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         #vell
         elif 'vell' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 45).status:
-                print('sending garmoth spawn message')
+                print('sending vell spawn message')
                 channel = self.bot.get_channel(715760182201679883)
                 message = 'Vell in 45 minutes find your nearest **friendly** officer for ride'
                 await channel.send(message)
@@ -139,7 +139,6 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
                 for boss in self.BOSS_SCHEDULE[self.next_boss_i][1]:
                     response = f'{response}\n{boss}'
                 response = f'{response}```'
-                self.update_state()
                 await channel.send(response)
 
     @boss_nagging.before_loop
