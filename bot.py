@@ -24,7 +24,7 @@ if DEBUG:
 else:
     prefix = '?'
 bot = commands.Bot(command_prefix=prefix,
-                   description=f'BDOBot:\nAutomagically read GS from gear photos.\nGet item info and MP prices.\nv:{version}')
+                   description=f'BDOBot:\nAutomagically read GS from gear photos.\nGet item info and MP prices.\nWorld boss reminders\nv:{version}')
 bot.owner_id = 152611107633233920
 
 if __name__ == '__main__':

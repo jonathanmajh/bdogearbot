@@ -116,6 +116,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
 
     @tasks.loop(seconds=60.0)
     async def boss_nagging(self):
+        print(f'boss timer {datetime.now()}')
         #garmoth
         if 'garmoth' in self.BOSS_SCHEDULE[self.next_boss_i][1]:
             if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 30).status:
