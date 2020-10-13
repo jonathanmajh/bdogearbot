@@ -8,8 +8,10 @@ def detect_text(gear_data: GearData):
     from google.cloud import vision
     client = vision.ImageAnnotatorClient()
 
-    image = vision.types.Image()
-    image.source.image_uri = gear_data.scrn_path
+    image = vision.Image(content=gear_data.obj)
+
+    # image = vision.types.Image()
+    # image.source.image_uri = gear_data.scrn_path
 
     response = client.text_detection(image=image)
     texts = response.text_annotations

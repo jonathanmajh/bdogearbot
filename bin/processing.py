@@ -26,16 +26,25 @@ def add_gear(gear_type, ctx):
             message = f'Note: This guild has {limit[0][0]} gear update requests remaining'
         else:
             message = None
-        gear_data = detect_text(gear_data)
-        if gear_data.status:
-            gear_data = gear_data.gear_data
+        # save photo
+        try:
             url = gear_data.scrn_path
             r = requests.get(url, allow_redirects=True)
             filename, file_ext = os.path.splitext(
                 ctx.message.attachments[0].filename)
             photo_path = f'{HOME_PATH}screenshots/{ctx.author.id}_{gear_type}{file_ext}'
-            open(photo_path, 'wb').write(r.content)
+            gear_data.obj = r.content
             gear_data.scrn_path = photo_path
+        except Exception as error:
+            user = self.bot.get_user(152611107633233920)
+            error = traceback.format_exception(type(error), error, error.__traceback__)
+            await user.send(f'```{error}```')
+            return Result(False, f'Error getting photo from discord servers')
+
+        gear_data = detect_text(gear_data)
+        if gear_data.status:
+            open(photo_path, 'wb').write(r.content)
+            gear_data = gear_data.gear_data
             gear_data = update_gear(gear_data)
             return Result(True, message=message, gear_data=gear_data)
         else:
