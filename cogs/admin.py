@@ -6,6 +6,8 @@ from bin.database import add_server, reset_server_requests, table_check
 from bin.models import ServerInfo
 from discord.ext import commands
 
+from cogs.error_handler import CommandErrorHandler
+
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -24,7 +26,7 @@ class AdminCog(commands.Cog):
                 await channel.send('Hello There...\nPlease tell a manager to set me up by running ?setup')
             break
 
-    @commands.command(name='setup') #TODO change to seperate messages
+    @commands.command(name='setup')  # TODO change to seperate messages
     async def setup_server(self, ctx, *, args=None):
         """
         Function to setup bot when first joining a server
@@ -75,6 +77,12 @@ Ex. "?setup default"'
         reset_server_requests(new_limit)
         await ctx.send(f'Reset remaining requests for all guilds to {new_limit}')
         await self.bot.change_presence(activity=discord.Game('Black Spirit Notice Me!'))
+
+    @commands.command(name='senderror', hidden=True)
+    @commands.is_owner()
+    async def send_error(self, ctx, message: str = 'testing'):  # int
+        CommandErrorHandler().send_pm(error=error)
+        raise Exception('message')
 
 
 def setup(bot):

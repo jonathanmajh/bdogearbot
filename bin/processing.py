@@ -9,6 +9,8 @@ from bin.database import (create_connection, del_gear, find_all, find_average,
                           find_gear, update_gear, update_server_requests)
 from bin.models import GearData, Result, SimpleGearData
 
+from cogs.error_handler import CommandErrorHandler
+
 load_dotenv()
 HOME_PATH = os.getenv('HOME_PATH')
 DB_PATH = f'{HOME_PATH}gear_bot_db.db'
@@ -36,9 +38,7 @@ def add_gear(gear_type, ctx):
             gear_data.obj = r.content
             gear_data.scrn_path = photo_path
         except Exception as error:
-            user = self.bot.get_user(152611107633233920)
-            error = traceback.format_exception(type(error), error, error.__traceback__)
-            await user.send(f'```{error}```')
+            CommandErrorHandler().send_pm(error=error)
             return Result(False, f'Error getting photo from discord servers')
 
         gear_data = detect_text(gear_data)
