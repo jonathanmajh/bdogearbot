@@ -35,6 +35,7 @@ class CommandErrorHandler(commands.Cog):
 
         # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
+            await self.send_pm(error)
             return
 
         # This prevents any cogs with an overwritten cog_command_error being handled here.

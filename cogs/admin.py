@@ -81,9 +81,12 @@ Ex. "?setup default"'
     @commands.command(name='senderror', hidden=True)
     @commands.is_owner()
     async def send_error(self, ctx, message: str = 'testing'):  # int
-        CommandErrorHandler().send_pm(error=error)
-        raise Exception('message')
-
+        try:
+            raise Exception(message)
+        except Exception as error:
+            print(error.__traceback__)
+            error_handler = self.bot.get_cog('CommandErrorHandler')
+            await error_handler.send_pm(error)
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))
