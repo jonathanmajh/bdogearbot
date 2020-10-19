@@ -75,18 +75,24 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     def __init__(self, bot):
         self.bot = bot
         self.boss_nagging.start()
-        self.next_boss_i = 0
+        self.next_boss_i = -1
         self.update_state()
 
     def update_state(self):
         time_now = time.gmtime()
         time_now = time_now.tm_wday * 10000 + time_now.tm_hour * 100 + time_now.tm_min
+        if self.next_boss_i + 1 == len(self.BOSS_SCHEDULE) and self.BOSS_SCHEDULE[-1][0] <= time_now:
+            self.next_boss_i = 0
+            return True
+        if self.next_boss_i == 0 and time_now > 10000:
+            return True
         for index, spawn in enumerate(self.BOSS_SCHEDULE):
             if spawn[0] < time_now:
                 next
             else:
                 self.next_boss_i = index
                 break
+
 
     def date_compare(self, time_obj: int, early: int = 0):
         """
