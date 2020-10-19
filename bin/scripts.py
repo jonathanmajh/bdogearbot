@@ -31,9 +31,9 @@ conn = sqlite3.connect(DB_PATH)
 cur = conn.cursor()
 
 
-conn.enable_load_extension(True)
-conn.load_extension("./bin/spellfix1.so")
-conn.enable_load_extension(False)
+# conn.enable_load_extension(True)
+# conn.load_extension("./bin/spellfix1.so")
+# conn.enable_load_extension(False)
 cur = conn.cursor()
 
 cur.executemany(
