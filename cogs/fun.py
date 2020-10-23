@@ -1,9 +1,10 @@
 import os
+from datetime import datetime
 from random import choice
 
 import discord
 from bin.database import add_server_message, get_server_message
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class ForFunCog(commands.Cog, name='4FUNctions'):
@@ -59,9 +60,23 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
                 response = 'There are no saved messages'
         else:
             add_server_message(ctx.guild.id, arg, ctx.author.id)
-            response = f'"{arg}" has been added for this Guild'
+            response = f'```{arg}``` has been added for this Guild'
         await ctx.send(response)
 
+    @tasks.loop(seconds=5)
+    async def daily_message(self):
+        print('daily message')
+        if datetime.now().tm_hour == 13:
+            result = get_server_message(715760181832843344, False)
+            if result:
+                response = f'```{result[0][0]}```'
+                channel = self.bot.get_channel(285232745150677013) #TODO change
+                await channel.send(response)
+
+    @daily_message.before_loop
+    async def before_daily(self):
+        print('waiting...')
+        await self.bot.wait_until_ready()
 
 def setup(bot):
     bot.add_cog(ForFunCog(bot))
