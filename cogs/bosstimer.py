@@ -8,6 +8,7 @@ from discord.ext import commands, tasks
 
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = [
+        #monday
         [0, ['garmoth']],
         [315, ['kzarka', 'nouver']],
         [515, ['kutum', 'karanda']],
@@ -17,10 +18,12 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         [1700, ['offin']],
         [1800, ['witch']],
         [2100, ['kutum']],
+        #tuesday
         [10000, ['nouver']],
         [10315, ['kzarka']],
         [10415, ['witch']],
         [10515, ['karanda']],
+        [10615, ['kzarka', 'nightmare']],
         [10700, ['kutum']],
         [11000, ['kzarka']],
         [11400, ['nouver']],
@@ -57,6 +60,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         [41800, ['witch']],
         [42100, ['nouver']],
         [50000, ['kzarka']],
+        [50100, ['kzarka', 'nightmare']],
         [50315, ['kutum', 'kzarka']],
         [50415, ['witch']],
         [50515, ['karanda']],
@@ -67,6 +71,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
         [51800, ['witch']],
         [52100, ['quint', 'muraka']],
         [60000, ['kzarka', 'karanda']],
+        [60415, ['kzarka', 'nightmare']],
         [60515, ['nouver', 'kutum']],
         [60700, ['kzarka']],
         [61000, ['kutum']],
