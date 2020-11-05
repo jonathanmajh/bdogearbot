@@ -29,6 +29,9 @@ def detect_text(gear_data: GearData):
         if fnmatch(text, '*Awakening*'):
             gear_data.awak_ap = int(split_text[count+1])
             scores_found = scores_found + 1
+        if fnmatch(text, '*Talent*'):
+            gear_data.awak_ap = int(split_text[count+1])
+            scores_found = scores_found + 1
         if fnmatch(text, '*Defense*'):
             gear_data.dp = int(split_text[count+1])
             scores_found = scores_found + 1
