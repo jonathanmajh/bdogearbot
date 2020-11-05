@@ -9,79 +9,18 @@ from discord.ext import commands, tasks
 class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
     BOSS_SCHEDULE = [
         #monday
-        [0, ['garmoth']],
-        [315, ['kzarka', 'nouver']],
-        [515, ['kutum', 'karanda']],
-        [700, ['karanda']],
-        [1000, ['kzarka']],
-        [1400, ['kzarka']],
-        [1700, ['offin']],
-        [1800, ['witch']],
-        [2100, ['kutum']],
+        [100, ['garmoth']],
         #tuesday
-        [10000, ['nouver']],
-        [10315, ['kzarka']],
-        [10415, ['witch']],
-        [10515, ['karanda']],
-        [10615, ['kzarka', 'nightmare']],
-        [10700, ['kutum']],
-        [11000, ['kzarka']],
-        [11400, ['nouver']],
-        [11700, ['kutum']],
-        [11800, ['witch']],
-        [12100, ['nouver']],
-        [20000, ['karanda']],
-        [20315, ['garmoth']],
-        [20415, ['witch']],
-        [20515, ['kutum', 'kzarka']],
-        [20700, ['karanda']],
-        [21400, ['karanda']],
-        [21700, ['nouver']],
-        [21800, ['witch']],
-        [22100, ['kutum', 'offin']],
-        [30000, ['vell']],
-        [30315, ['karanda', 'kzarka']],
-        [30415, ['quint', 'muraka']],
-        [30515, ['nouver']],
-        [30700, ['kutum']],
-        [31000, ['kzarka']],
-        [31400, ['kutum']],
-        [31700, ['nouver']],
-        [31800, ['witch']],
-        [32100, ['kzarka']],
-        [40000, ['kutum']],
-        [40315, ['garmoth']],
-        [40415, ['witch']],
-        [40515, ['kzarka', 'karanda']],
-        [40700, ['nouver']],
-        [41000, ['karanda']],
-        [41400, ['kutum']],
-        [41700, ['karanda']],
-        [41800, ['witch']],
-        [42100, ['nouver']],
-        [50000, ['kzarka']],
-        [50100, ['kzarka', 'nightmare']],
-        [50315, ['kutum', 'kzarka']],
-        [50415, ['witch']],
-        [50515, ['karanda']],
-        [50700, ['offin']],
-        [51000, ['nouver']],
-        [51400, ['kutum']],
-        [51700, ['nouver']],
-        [51800, ['witch']],
-        [52100, ['quint', 'muraka']],
-        [60000, ['kzarka', 'karanda']],
-        [60415, ['kzarka', 'nightmare']],
-        [60515, ['nouver', 'kutum']],
-        [60700, ['kzarka']],
-        [61000, ['kutum']],
-        [61400, ['nouver']],
-        [61700, ['kzarka']],
-        [61800, ['witch']],
-        [62100, ['vell']],
+        [20415, ['garmoth']],
+
+        [30100, ['vell']],
+
+        [40415, ['garmoth']],
+
+        [62200, ['vell']],
     ]
 
-    BOSSES = ['vell', 'garmoth', 'karanda', 'kzarka', 'kutum', 'nouver', 'quint', 'muraka']
+    BOSSES = ['vell', 'garmoth']
     AKA = {'cronmoth': 'Garmoth', 'garmoth': 'Garmoth'} #map of boss alias
     # wday, hour, minute in UTC
 
@@ -150,14 +89,7 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
                 channel = self.bot.get_channel(715760182201679883)
                 message = 'Vell in 45 minutes find your nearest **friendly** officer for ride'
                 await channel.send(message)
-        if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 10).status:
-            print('sending normal spawn message')
-            channel = self.bot.get_channel(755211391824167012)
-            response = f'```Spawning in 10 minutes!!!'
-            for boss in self.BOSS_SCHEDULE[self.next_boss_i][1]:
-                response = f'{response}\n{boss}'
-            response = f'{response}```'
-            await channel.send(response)
+
 
     @boss_nagging.before_loop
     async def before_nagging(self):
