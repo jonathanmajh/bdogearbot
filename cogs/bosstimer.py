@@ -158,6 +158,14 @@ class BossScheduleCog(commands.Cog, name='GarmothSchedule'):
                 response = f'{response}\n{boss}'
             response = f'{response}``` {guild_role.mention}'
             await channel.send(response)
+        if self.date_compare(self.BOSS_SCHEDULE[self.next_boss_i][0], 30).status:
+            channel = self.bot.get_channel(755211391824167012)
+            response = f'```Spawning in 30 minutes!!!'
+            guild_role = discord.utils.get(channel.guild.roles, name=self.BOSS_WARNING_ROLES[1])
+            for boss in self.BOSS_SCHEDULE[self.next_boss_i][1]:
+                response = f'{response}\n{boss}'
+            response = f'{response}``` {guild_role.mention}'
+            await channel.send(response)
 
     @boss_nagging.before_loop
     async def before_nagging(self):
