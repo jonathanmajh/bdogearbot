@@ -114,6 +114,8 @@ class GearCog(commands.Cog, name='Gear'):
         except ValueError:
             if gear_type:
                 page = int(gear_type)
+            else:
+                page = 1
             gear_type = temp
         results = get_all(ctx.guild.id, gear_type, page-1)
         if results.status:
