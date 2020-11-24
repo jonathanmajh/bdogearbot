@@ -1,5 +1,6 @@
 import asyncio
 import os
+from math import ceil
 
 import discord
 from bin.processing import (add_gear, get_all, get_average, get_gear,
@@ -106,19 +107,26 @@ class GearCog(commands.Cog, name='Gear'):
         await ctx.send(response)
 
     @commands.command(name='gearall', help='Get the GS of everyone in the guild')
-    async def guild_all(self, ctx, gear_type=None):
-        result = get_all(ctx.guild.id, gear_type)
-        if result.status:
+    async def guild_all(self, ctx, page=1, gear_type=None):
+        temp = page
+        try: # incase user flips the parameters
+            page = int(page)
+        except ValueError:
+            page = int(gear_type)
+            gear_type = temp
+        results = get_all(ctx.guild.id, gear_type, page-1)
+        if results.status:
             response = f'''
 ```\nGear for all {ctx.guild.name} members are listed below
 __________________________________________________________________
 |Gear Type| GS  | AP  | AAP | DP  |  Updated   | Family Name'''
-            for result in result.obj:
+            for result in results.obj:
                 response = f'''{response}
 |{result.gear_type.ljust(9)}| {result.gs} | {result.succ_ap} | {result.awak_ap} | {result.dp} | {result.datestamp} | {result.family_name}'''
-            response = f'{response}```'
+            response = f'''{response}
+Page {page} of {ceil(results.code / 10)}: ({results.code} Entries)```'''
         else:
-            response = result.message
+            response = results.message
         await ctx.send(response)
 
 

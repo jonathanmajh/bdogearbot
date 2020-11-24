@@ -2,7 +2,6 @@ import os
 import sqlite3
 from random import choice
 from sqlite3 import Error
-
 from dotenv import load_dotenv
 
 from bin.models import GearData
@@ -247,16 +246,18 @@ def find_average(find):
     return rows
 
 
-def find_all(find):
+def find_all(find, page):
     conn = create_connection(DB_PATH)
     cur = conn.cursor()
-    sql = f'SELECT * FROM member_gear WHERE server_id={find[0]}'
+    sql = f'FROM member_gear WHERE server_id={find[0]}'
     if len(find) == 2:
         sql = sql + f' AND gear_type="{find[1]}"'
-    sql = sql + ' ORDER BY gs DESC'
-    cur.execute(sql,)
+    cur.execute(f'SELECT COUNT (*) {sql}')
+    pages = cur.fetchone()[0]
+    sql = f'{sql} ORDER BY gs DESC LIMIT {page*10}, 10'
+    cur.execute(f'SELECT * {sql}',)
     rows = cur.fetchall()
-    return rows
+    return [rows, pages]
 
 
 def add_server_message(server_id, message, user_id):

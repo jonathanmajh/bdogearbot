@@ -101,15 +101,21 @@ def get_average(guild_id, gear_type):
         return Result(True, gs_sum/len(results))
 
 
-def get_all(guild_id, gear_type):
+def get_all(guild_id, gear_type, page):
+    if page < 0:
+        return Result(False, 'Pages starts at 1')
     if gear_type == None:
         find = [guild_id]
     else:
         find = [guild_id, gear_type.lower()]
 
-    results = find_all(find)
+    results = find_all(find, page)
+    pages = results[1]
+    results = results[0]
 
-    if len(results) == 0:
+    if page > pages:
+        return Result(False, f'There are only {pages} pages of gear available')
+    elif len(results) == 0:
         return Result(False, 'This Guild has no gear')
     else:
         gear = []
@@ -117,4 +123,4 @@ def get_all(guild_id, gear_type):
             gear.append(SimpleGearData(result[1], result[7], result[9],
                                        result[3], result[4], result[5],
                                        result[6]))
-        return Result(True, 'done', obj=gear)
+        return Result(True, 'done', obj=gear, code=pages)
