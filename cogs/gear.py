@@ -107,7 +107,7 @@ class GearCog(commands.Cog, name='Gear'):
         await ctx.send(response)
 
     @commands.command(name='gearall', help='Get the GS of everyone in the guild')
-    async def guild_all(self, ctx, page=1, gear_type=None):
+    async def guild_all(self, ctx, page='1', gear_type=None):
         temp = page
         try: # incase user flips the parameters
             page = int(page)
