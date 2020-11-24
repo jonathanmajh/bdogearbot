@@ -112,7 +112,8 @@ class GearCog(commands.Cog, name='Gear'):
         try: # incase user flips the parameters
             page = int(page)
         except ValueError:
-            page = int(gear_type)
+            if gear_type:
+                page = int(gear_type)
             gear_type = temp
         results = get_all(ctx.guild.id, gear_type, page-1)
         if results.status:
