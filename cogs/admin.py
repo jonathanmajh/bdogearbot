@@ -90,3 +90,11 @@ Ex. "?setup default"'
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))
+
+
+def check_admin(ctx):
+    admin = False
+    for role in ctx.author.roles:
+        if role.name == "DiscAdmin":
+            admin = True
+    return admin

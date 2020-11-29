@@ -7,6 +7,7 @@ from bin.processing import (add_gear, get_all, get_average, get_gear,
                             remove_gear)
 from discord.ext import commands
 from discord.utils import get
+from cogs.admin import check_admin
 
 
 class GearCog(commands.Cog, name='Gear'):
@@ -37,6 +38,38 @@ class GearCog(commands.Cog, name='Gear'):
                 await error_handler.send_pm(gear_data.obj)
             response = response + (message if message else '')
             await ctx.send(response)
+
+
+    @commands.command(name='purge')
+    async def remove_deserter_gear(self, ctx, id:int):
+        """
+        Remove gear of a member who left using their discord id
+
+        Will send a confirmation message
+        """
+        if not check_admin(ctx):
+            await ctx.send("You are not admin of this server! :anger:")
+            return True
+        channel = ctx.message.channel
+        user = self.bot.get_user(id)
+        if not user:
+            await ctx.send(f'There is no user with that id: {id}')
+            return True
+        message = await channel.send(f"You are deleting {user.name}'s gear. React to confirm")
+        await message.add_reaction('💯')
+        await message.add_reaction('⁉')
+
+        def check(reaction, user):
+            return user == ctx.author and (str(reaction.emoji) == '💯' or str(reaction.emoji) == '⁉')
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await channel.send(f'Gear remove for cancelled (60s timeout exceeded)')
+        else:
+            await channel.send(f'you reacted with {reaction.emoji}')
+            print('removing gear')
+            result = remove_gear(id, 'all')
+            await channel.send(result.message)
 
     @commands.command(name='gearremove', aliases=['grm'])
     async def remove_any_gear(self, ctx, gear_type='all'):
