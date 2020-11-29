@@ -53,9 +53,10 @@ class GearCog(commands.Cog, name='Gear'):
         channel = ctx.message.channel
         user = self.bot.get_user(id)
         if not user:
-            await ctx.send(f'There is no user with that id: {id}')
-            return True
-        message = await channel.send(f"You are deleting {user.name}'s gear. React to confirm")
+            message = f"You are deleting gear. React to confirm"
+        else:
+            message = f"You are deleting {user.name}'s gear. React to confirm"
+        message = await channel.send(message)
         await message.add_reaction('💯')
         await message.add_reaction('⁉')
 
