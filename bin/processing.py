@@ -140,5 +140,5 @@ def get_id(guild_id, page):
     else:
         gear = []
         for result in results:
-            gear.append(ServerMessages(0, result[0], result[1]))
+            gear.append(ServerMessages(0, result[1], result[0]))
         return Result(True, 'done', obj=gear, code=pages)

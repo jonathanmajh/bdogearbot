@@ -181,7 +181,7 @@ __________________________________________________________________
 |        ID        | Family Name'''
             for result in results.obj:
                 response = f'''{response}
-|{result.user_id.ljust(16)}| {result.message}'''
+|{result.user_id.ljust(18)}| {result.message}'''
             response = f'''{response}
 Page {page} of {ceil(results.code / 20)}: ({results.code} Entries)```'''
         else:
