@@ -7,7 +7,7 @@ from bin.models import ServerInfo
 from discord.ext import commands
 
 from cogs.error_handler import CommandErrorHandler
-
+from cogs.exceptions import FailAdminCheck, FailGearChannelCheck
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -97,4 +97,16 @@ def check_admin(ctx):
     for role in ctx.author.roles:
         if role.name == "DiscAdmin":
             admin = True
-    return admin
+    if admin:
+        return True
+    else:
+        raise FailAdminCheck
+
+def check_gear_channel(ctx):
+    if ctx.channel.id == 715761762992914523:
+        return True
+    else:
+        raise FailGearChannelCheck
+
+
+

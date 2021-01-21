@@ -10,7 +10,7 @@ import discord
 import traceback
 import sys
 from discord.ext import commands
-
+from cogs.exceptions import FailGearChannelCheck, FailAdminCheck
 
 class CommandErrorHandler(commands.Cog):
 
@@ -54,6 +54,12 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, ignored):
             return
 
+        if isinstance(error, FailGearChannelCheck):
+            await ctx.send(f'{ctx.command} can only be used in gear channel.')
+
+        if isinstance(error, FailAdminCheck):
+            await ctx.send(f'{ctx.command} can only be by DiscAdmin.')
+
         if isinstance(error, commands.DisabledCommand):
             await ctx.send(f'{ctx.command} has been disabled.')
 
@@ -63,6 +69,8 @@ class CommandErrorHandler(commands.Cog):
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             await self.send_pm(error)
             await ctx.send(":scream: Uh Oh! Someone made an oopsie! :sob:\n:poop: Go bug TWICEAhri#4578 to fix it! :rage:")
+
+
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler(bot))

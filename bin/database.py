@@ -127,11 +127,11 @@ CREATE TABLE IF NOT EXISTS member_gear (
             cur.execute('''
 CREATE TABLE IF NOT EXISTS server_info (
     server_id int PRIMARY KEY,
-    server_owner int,
+    server_admin_role_id int,
     requests_made int,
     general_channel_id int,
-    gear_photo_id int,
-    gear_talk_id int
+    gear_channel_id int,
+    boss_timer_channel_id int
 );''')
         else:
             print('server table already exists')
@@ -155,12 +155,12 @@ CREATE TABLE IF NOT EXISTS server_messages (
 
 def add_server(server_info):
     conn = create_connection(DB_PATH)
-    sql = '''insert or replace into server_info(server_id,server_owner,
-             requests_made,general_channel_id,gear_photo_id,gear_talk_id)
+    sql = '''insert or replace into server_info(server_id,server_admin_role_id,
+             requests_made,general_channel_id,gear_channel_id,boss_timer_channel_id)
              values(?,?,?,?,?,?)'''
     cur = conn.cursor()
-    payload = (server_info.server_id, server_info.server_owner, server_info.requests_name,
-               server_info.general_channel_id, server_info.gear_photo_id, server_info.gear_talk_id)
+    payload = (server_info.server_id, server_info.server_admin_role_id, server_info.requests_made,
+               server_info.general_channel_id, server_info.gear_channel_id, server_info.boss_timer_channel_id)
     cur.execute(sql, payload)
     conn.commit()
     return server_info
@@ -217,6 +217,7 @@ def find_gear(find):
 
 
 def del_gear(find):
+    # TODO only remove gear associated with the server
     conn = create_connection(DB_PATH)
     cur = conn.cursor()
     sql_del = f'DELETE FROM member_gear WHERE user_id=?'
@@ -259,6 +260,16 @@ def find_all(find, page):
     rows = cur.fetchall()
     return [rows, pages]
 
+def find_id(guild_id, page):
+    conn = create_connection(DB_PATH)
+    cur = conn.cursor()
+    sql = f'FROM member_gear WHERE server_id={guild_id}'
+    cur.execute(f'SELECT COUNT (*) {sql}')
+    pages = cur.fetchone()[0]
+    sql = f'{sql} ORDER BY gs DESC LIMIT {page*50}, 50'
+    cur.execute(f'SELECT user_id, family_name {sql}',)
+    rows = cur.fetchall()
+    return [rows, pages]
 
 def add_server_message(server_id, message, user_id):
     conn = create_connection(DB_PATH)

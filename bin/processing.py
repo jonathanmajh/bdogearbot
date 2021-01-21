@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 from bin.cloud_vision import detect_text
 from bin.database import (create_connection, del_gear, find_all, find_average,
-                          find_gear, update_gear, update_server_requests)
-from bin.models import GearData, Result, SimpleGearData
+                          find_gear, update_gear, update_server_requests, find_id)
+from bin.models import GearData, Result, SimpleGearData, ServerMessages
 
 load_dotenv()
 HOME_PATH = os.getenv('HOME_PATH')
@@ -123,4 +123,22 @@ def get_all(guild_id, gear_type, page):
             gear.append(SimpleGearData(result[1], result[7], result[9],
                                        result[3], result[4], result[5],
                                        result[6]))
+        return Result(True, 'done', obj=gear, code=pages)
+
+def get_id(guild_id, page):
+    if page < 0:
+        return Result(False, 'Pages starts at 1')
+
+    results = find_id(guild_id, page)
+    pages = results[1]
+    results = results[0]
+
+    if page > pages:
+        return Result(False, f'There are only {pages} pages of gear available')
+    elif len(results) == 0:
+        return Result(False, 'This Guild has no gear')
+    else:
+        gear = []
+        for result in results:
+            gear.append(ServerMessages(0, result[0], result[1]))
         return Result(True, 'done', obj=gear, code=pages)

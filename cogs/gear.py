@@ -4,7 +4,7 @@ from math import ceil
 
 import discord
 from bin.processing import (add_gear, get_all, get_average, get_gear,
-                            remove_gear)
+                            remove_gear, get_id)
 from discord.ext import commands
 from discord.utils import get
 from cogs.admin import check_admin
@@ -166,6 +166,28 @@ Page {page} of {ceil(results.code / 10)}: ({results.code} Entries)```'''
             response = results.message
         await ctx.send(response)
 
+
+    @commands.command(name='gearid', help='Get the ID & Family Name of everyone with gear in the guild')
+    async def guild_id(self, ctx, page='1'):
+        temp = page
+        try: # incase user flips the parameters
+            page = int(page)
+        except ValueError:
+            page = 1
+        results = get_id(ctx.guild.id, page-1)
+        if results.status:
+            response = f'''
+```\nFamily Name and ID for all {ctx.guild.name} members are listed below
+__________________________________________________________________
+|        ID        | Family Name'''
+            for result in results.obj:
+                response = f'''{response}
+|{result.user_id.ljust(16)}| {result.message}'''
+            response = f'''{response}
+Page {page} of {ceil(results.code / 50)}: ({results.code} Entries)```'''
+        else:
+            response = results.message
+        await ctx.send(response)
 
 def setup(bot):
     bot.add_cog(GearCog(bot))

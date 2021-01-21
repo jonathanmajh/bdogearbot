@@ -49,14 +49,15 @@ class Result:
 @dataclass
 class ServerInfo:
     server_id: int
-    server_owner: int
-    requests_name: int = 500
+    server_admin_role_id: int
+    requests_made: int = 500
     general_channel_id: int = None
-    gear_photo_id: int = None
-    gear_talk_id: int = None
+    gear_channel_id: int = None
+    boss_timer_channel_id: int = None
 
 
 @dataclass
 class ServerMessages:
     server_id: int
     message: str
+    user_id: int
