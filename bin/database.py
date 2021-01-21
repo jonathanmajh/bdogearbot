@@ -266,7 +266,7 @@ def find_id(guild_id, page):
     sql = f'FROM member_gear WHERE server_id={guild_id}'
     cur.execute(f'SELECT COUNT (*) {sql}')
     pages = cur.fetchone()[0]
-    sql = f'{sql} ORDER BY gs DESC LIMIT {page*50}, 50'
+    sql = f'{sql} ORDER BY gs DESC LIMIT {page*20}, 20'
     cur.execute(f'SELECT user_id, family_name {sql}',)
     rows = cur.fetchall()
     return [rows, pages]

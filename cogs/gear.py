@@ -169,7 +169,6 @@ Page {page} of {ceil(results.code / 10)}: ({results.code} Entries)```'''
 
     @commands.command(name='gearid', help='Get the ID & Family Name of everyone with gear in the guild')
     async def guild_id(self, ctx, page='1'):
-        temp = page
         try: # incase user flips the parameters
             page = int(page)
         except ValueError:
@@ -184,7 +183,7 @@ __________________________________________________________________
                 response = f'''{response}
 |{result.user_id.ljust(16)}| {result.message}'''
             response = f'''{response}
-Page {page} of {ceil(results.code / 50)}: ({results.code} Entries)```'''
+Page {page} of {ceil(results.code / 20)}: ({results.code} Entries)```'''
         else:
             response = results.message
         await ctx.send(response)
