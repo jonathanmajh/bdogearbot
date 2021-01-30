@@ -127,10 +127,12 @@ class GambleCog(commands.Cog, name='EnchancementGambling'):
                 item_ids = []
                 for item in item_prices:
                     print(item)
+                    cost = item[start] * start
+                    revenue = item[end] * 0.845
                     if calc=='%':
-                        profit = item[end]/item[start]
+                        profit = revenue/cost
                     else:
-                        profit = item[end]-item[start]
+                        profit = revenue-cost
                     table.insert({'item_id':item[0], 'profit':profit})
                     item_ids.append(item[0])
                 sort = sorted(table.all(), key=lambda k: k['profit'])
