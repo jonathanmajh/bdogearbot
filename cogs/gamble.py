@@ -127,7 +127,7 @@ class GambleCog(commands.Cog, name='EnchancementGambling'):
                 item_ids = []
                 for item in item_prices:
                     print(item)
-                    cost = item[start] * start
+                    cost = item[start] + (item[1] * (end - start))
                     revenue = item[end] * 0.845
                     if calc=='%':
                         profit = revenue/cost
