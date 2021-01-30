@@ -82,7 +82,6 @@ def update_item_price(item):
             return result
         except Exception as e:
             return [False]
-        print(response)
     else:
         return [False]
 
@@ -127,7 +126,6 @@ class GambleCog(commands.Cog, name='EnchancementGambling'):
                 table = db.table(str(datetime.now()))
                 item_ids = []
                 for item in item_prices:
-                    print(item)
                     cost = item[start] + (item[1] * (end - start))
                     revenue = item[end] * 0.845
                     if calc=='%':
