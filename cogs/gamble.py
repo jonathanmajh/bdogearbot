@@ -120,6 +120,7 @@ class GambleCog(commands.Cog, name='EnchancementGambling'):
         end = check_level(end)
         if start and end:
             if calc=='%' or calc=='$':
+                await ctx.send('```Getting Market Prices for Accessories Please Wait```')
                 item_prices = refresh_data()
                 db = TinyDB(storage=MemoryStorage)
                 table = db.table(str(datetime.now()))
