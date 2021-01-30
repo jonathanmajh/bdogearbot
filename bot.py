@@ -15,7 +15,7 @@ DEBUG = os.getenv('DEBUG')
 version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
-initial_extensions = ['cogs.fun', 'cogs.gear',
+initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.gamble',
                       'cogs.admin', 'cogs.bosstimer', 'cogs.items', 'cogs.error_handler']
 
 

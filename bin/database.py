@@ -150,6 +150,26 @@ CREATE TABLE IF NOT EXISTS server_messages (
 );''')
         else:
             print('message table already exists')
+
+        cur.execute('''
+        SELECT name FROM sqlite_master WHERE type='table' AND name='enhancement';
+        ''')
+        row = cur.fetchall()
+        if len(row) == 0:
+            print('creating message table')
+            cur.execute('''
+CREATE TABLE IF NOT EXISTS enhancement (
+    item_id int PRIMARY KEY,
+    base int NOT NULL,
+    pri int NOT NULL,
+    duo int NOT NULL,
+    tri int NOT NULL,
+    tet int NOT NULL,
+    pen int NOT NULL,
+    last_update timestamp NOT NULL
+);''')
+        else:
+            print('enhancement table already exists')
         return True
 
 
@@ -229,12 +249,9 @@ def del_gear(find):
         queries = (find[0], find[1])
     cur.execute(sql_find, queries)
     rows = cur.fetchall()
-
     cur.execute(sql_del, queries)
     conn.commit()
-
     return rows
-
 
 def find_average(find):
     conn = create_connection(DB_PATH)
@@ -245,7 +262,6 @@ def find_average(find):
     cur.execute(sql,)
     rows = cur.fetchall()
     return rows
-
 
 def find_all(find, page):
     conn = create_connection(DB_PATH)
@@ -280,7 +296,6 @@ def add_server_message(server_id, message, user_id):
     conn.commit()
     return True
 
-
 def get_server_message(server_id, all):
     conn = create_connection(DB_PATH)
     cur = conn.cursor()
@@ -293,3 +308,23 @@ def get_server_message(server_id, all):
         return list(rows)
     else:
         return [choice(list(rows))]
+
+def get_item_price(item):
+    conn = create_connection(DB_PATH)
+    cur = conn.cursor()
+    sql = 'SELECT * FROM enhancement WHERE item_id=?;'
+    cur.execute(sql, (item,))
+    rows = cur.fetchone()
+    if not rows:
+        return [False]
+    return list(rows)
+
+def save_item_price(item):
+    conn = create_connection(DB_PATH)
+    cur = conn.cursor()
+    sql = 'INSERT OR REPLACE INTO enhancement (item_id, base, pri, duo, tri, tet, pen, last_update) values (?,?,?,?,?,?,?,?)'
+    print(item)
+    payload = (item[0], item[1], item[2], item[3], item[4], item[5], item[6], item[7])
+    cur.execute(sql, payload)
+    conn.commit()
+    return True

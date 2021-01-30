@@ -3,3 +3,4 @@ discord.py>=1.5
 google-cloud-vision>=2.0
 Metaphone>=0.6
 beautifulsoup4>=4.9
+tinydb>=4.3

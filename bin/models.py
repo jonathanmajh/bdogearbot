@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 
 
 @dataclass
@@ -61,3 +61,15 @@ class ServerMessages:
     server_id: int
     message: str
     user_id: int
+
+
+@dataclass
+class ItemPrices:
+    item_id: int
+    base: int
+    pri: int    
+    duo: int
+    tri: int
+    tet: int
+    pen: int
+    stamp: datetime
