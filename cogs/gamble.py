@@ -61,14 +61,14 @@ def refresh_data():
         if not price[0] or (datetime.strptime(price[7], '%Y-%m-%d %H:%M:%S.%f') + timedelta(minutes=60) < time_now):
             price = update_item_price(item)
             if not price[0]:
-                next
+                continue
             save_item_price(price)
         prices.append(price)
     return prices
 
 
 def update_item_price(item):
-    URL = f'https://marketweb-na.blackdesertonline.com/Trademarket/GetWorldMarketSubList'
+    URL = f'https://na-trade.naeu.playblackdesert.com/Trademarket/GetWorldMarketSubList'
     r = requests.post(URL, headers={'Content-Type': 'application/json',
                                     'User-Agent': 'BlackDesert'}, data="{'keyType' : 0, 'mainKey': "+str(item)+"}")
     if r.status_code == 200:
