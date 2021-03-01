@@ -46,10 +46,10 @@ ACCESSORY_IDS = [
     12328,  # Manos Green Coral Belt
     12329,  # Manos Golden Coral Belt
     12330,  # Manos White Coral Belt
-    705509,  # Manos Necklace
-    705510,  # Manos Earring
-    705511,  # Manos Ring
-    705512,  # Manos Belt
+    # 705509,  # Manos Necklace
+    # 705510,  # Manos Earring
+    # 705511,  # Manos Ring
+    # 705512,  # Manos Belt
 ]
 
 
