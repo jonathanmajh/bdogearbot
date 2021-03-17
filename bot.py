@@ -16,7 +16,7 @@ version = subprocess.check_output(
     ["git", "describe", "--always"]).strip().decode()
 
 initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.gamble',
-                      'cogs.admin', 'cogs.bosstimer', 'cogs.items', 'cogs.error_handler']
+                      'cogs.admin', 'cogs.items', 'cogs.error_handler']
 
 
 if DEBUG:
