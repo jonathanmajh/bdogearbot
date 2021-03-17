@@ -3,7 +3,7 @@ import os
 from metaphone import doublemetaphone
 
 # create html file by copying inner html of <tbody> under <table "MainItemTable_wrapper">
-with open('bdoitems_import_example.html', 'r') as reader:
+with open('bin/bdoitems_import.html', 'r') as reader:
     line = reader.readline()
     counter = 1
     items = []
