@@ -34,8 +34,9 @@ class GearCog(commands.Cog, name='Gear'):
                 response = f'{gear_type} saved for {ctx.author.display_name}. {gear_data.succ_ap}/{gear_data.awak_ap}/{gear_data.dp}: GS: {gear_data.gs}\n'
             else:
                 response = gear_data.message
-                error_handler = self.bot.get_cog('CommandErrorHandler')
-                await error_handler.send_pm(gear_data.obj)
+                if gear_data.obj:
+                    error_handler = self.bot.get_cog('CommandErrorHandler')
+                    await error_handler.send_pm(gear_data.obj)
             response = response + (message if message else '')
             await ctx.send(response)
 

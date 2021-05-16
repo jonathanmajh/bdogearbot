@@ -20,7 +20,7 @@ class CommandErrorHandler(commands.Cog):
     async def send_pm(self, error):
         user = self.bot.get_user(152611107633233920)
         error = traceback.format_exception(type(error), error, error.__traceback__)
-        await user.send(error)
+        await user.send('```{}```'.format(error))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -66,11 +66,9 @@ class CommandErrorHandler(commands.Cog):
         else:
             # All other Errors not returned come here. And we can just print the default TraceBack.
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            # traceback.print_exception(type(error), error) #, error.__traceback__, file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             await self.send_pm(error)
             await ctx.send(":scream: Uh Oh! Someone made an oopsie! :sob:\n:poop: Go bug TWICEAhri#4578 to fix it! :rage:")
-
-
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler(bot))

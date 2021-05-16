@@ -18,7 +18,6 @@ version = subprocess.check_output(
 initial_extensions = ['cogs.fun', 'cogs.gear', 'cogs.gamble',
                       'cogs.admin', 'cogs.items', 'cogs.error_handler']
 
-
 if DEBUG:
     prefix = '~'
 else:
@@ -35,7 +34,6 @@ if __name__ == '__main__':
             print(f'Failed to load extension {extension}.')
             print(e)
 
-
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
@@ -44,6 +42,5 @@ async def on_ready():
         print("{} : {}".format(guild.name, guild.id))
     await bot.change_presence(activity=discord.Game('Black Spirit Notice Me!'))
     # await boss_nagging.start() no nagging for now
-
 
 bot.run(TOKEN, bot=True, reconnect=True)
