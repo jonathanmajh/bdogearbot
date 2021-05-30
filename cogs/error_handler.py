@@ -18,7 +18,7 @@ class CommandErrorHandler(commands.Cog):
         self.bot = bot
 
     async def send_pm(self, error):
-        user = self.bot.get_user(152611107633233920)
+        user = await self.bot.fetch_user(152611107633233920)
         error = traceback.format_exception(type(error), error, error.__traceback__)
         await user.send('```{}```'.format(error))
 
