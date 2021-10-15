@@ -25,7 +25,7 @@ def add_gear(gear_type, ctx):
         #elif limit[0][0] < 20:
          #   message = f'Note: This guild has {limit[0][0]} gear update requests remaining'
         #else:
-         #   message = None
+        message = None
         # save photo
         try:
             url = gear_data.scrn_path
