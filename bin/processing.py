@@ -19,13 +19,13 @@ def add_gear(gear_type, ctx):
         gear_data = GearData(user_id=ctx.author.id, gear_type=gear_type, scrn_path=ctx.message.attachments[0].url,
                              family_name=ctx.author.display_name, server_id=ctx.guild.id,
                              datestamp=date.today())
-        limit = update_server_requests(ctx.guild.id)
-        if limit[0][0] < 0:
-            return Result(False, 'This guild has reached the maximum of gear update requests for this month')
-        elif limit[0][0] < 20:
-            message = f'Note: This guild has {limit[0][0]} gear update requests remaining'
-        else:
-            message = None
+        # limit = update_server_requests(ctx.guild.id)
+        # if limit[0][0] < 0:
+          #  return Result(False, 'This guild has reached the maximum of gear update requests for this month')
+        #elif limit[0][0] < 20:
+         #   message = f'Note: This guild has {limit[0][0]} gear update requests remaining'
+        #else:
+         #   message = None
         # save photo
         try:
             url = gear_data.scrn_path
