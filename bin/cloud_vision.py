@@ -6,7 +6,7 @@ def same_line(text1, text2):
     """check if text is somewhat on the same line"""
     box1y = text1.bounding_poly.vertices[1].y + text1.bounding_poly.vertices[2].y
     box2y = text2.bounding_poly.vertices[1].y + text2.bounding_poly.vertices[2].y
-    if abs(box1y - box2y) < 5:
+    if abs(box1y - box2y) < 10:
         return True
     return False
 
