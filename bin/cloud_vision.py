@@ -22,7 +22,7 @@ def detect_text(gear_data: GearData):
     print('Removing from stack:')
     print(texts.pop(0))
     for count, text in enumerate(texts):
-        print(texts.description)
+        print(text.description)
         if fnmatch(text.description, '*Attack*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric():
