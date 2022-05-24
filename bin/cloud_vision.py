@@ -15,26 +15,42 @@ def detect_text(gear_data: GearData):
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    print('Texts:')
     scores_found = 0
     if response.error.message:
         return Result(False, f'Error encountered: {response.error.message}')
-    else:
-        print(texts[0].description)
-    split_text = texts[0].description.split('\n')
-    for count, text in enumerate(split_text):
-        if fnmatch(text, '*Attack*'):
-            gear_data.succ_ap = int(split_text[count+1])
-            scores_found = scores_found + 1
+    # split_text = texts[0].description.split('\n')
+    print('Removing from stack:')
+    print(texts.pop(0))
+    for count, text in enumerate(texts):
+        print(texts.description)
+        if fnmatch(text.description, '*Attack*'):
+            for j in range(count, len(texts)):
+                if texts[j].description.isnumeric():
+                    gear_data.succ_ap = int(texts[j].description)
+                    print(f'Found Succ AP: ${texts.pop(j)}')
+                    scores_found = scores_found + 1
+                    break
         if fnmatch(text, '*Awakening*'):
-            gear_data.awak_ap = int(split_text[count+1])
-            scores_found = scores_found + 1
+            for j in range(count, len(texts)):
+                if texts[j].description.isnumeric():
+                    gear_data.awak_ap = int(texts[j].description)
+                    print(f'Found Awak AP: ${texts.pop(j)}')
+                    scores_found = scores_found + 1
+                    break
         if fnmatch(text, '*Talent*'):
-            gear_data.awak_ap = int(split_text[count+1])
-            scores_found = scores_found + 1
+            for j in range(count, len(texts)):
+                if texts[j].description.isnumeric():
+                    gear_data.awak_ap = int(texts[j].description)
+                    print(f'Found Awak AP: ${texts.pop(j)}')
+                    scores_found = scores_found + 1
+                    break
         if fnmatch(text, '*Defense*'):
-            gear_data.dp = int(split_text[count+1])
-            scores_found = scores_found + 1
+            for j in range(count, len(texts)):
+                if texts[j].description.isnumeric():
+                    gear_data.dp = int(texts[j].description)
+                    print(f'Found DP: ${texts.pop(j)}')
+                    scores_found = scores_found + 1
+                    break
 
     if scores_found == 3:
         gear_data.gs = max(gear_data.succ_ap, gear_data.awak_ap) + gear_data.dp
