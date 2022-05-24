@@ -2,11 +2,11 @@ from fnmatch import fnmatch
 
 from bin.models import GearData, Result
 
-def same_line(text1, text2):
+def same_line(text1, text2, tolerance):
     """check if text is somewhat on the same line"""
     box1y = text1.bounding_poly.vertices[1].y + text1.bounding_poly.vertices[2].y
     box2y = text2.bounding_poly.vertices[1].y + text2.bounding_poly.vertices[2].y
-    if abs(box1y - box2y) < 10:
+    if abs(box1y - box2y) < tolerance:
         return True
     return False
 
@@ -27,12 +27,13 @@ def detect_text(gear_data: GearData):
         return Result(False, f'Error encountered: {response.error.message}')
     # split_text = texts[0].description.split('\n')
     print('Removing from stack:')
+    tolerance = (texts[0].bounding_poly.vertices[2].y - texts[0].bounding_poly.vertices[1].y) * 0.03
     print(texts.pop(0))
     for count, text in enumerate(texts):
         print(f'{text.description} - {text.bounding_poly.vertices[1].y + text.bounding_poly.vertices[2].y}')
         if fnmatch(text.description, '*Attack*'):
             for j in range(count, len(texts)):
-                if texts[j].description.isnumeric() & same_line(text, texts[j]):
+                if texts[j].description.isnumeric() & same_line(text, texts[j], tolerance):
                     gear_data.succ_ap = int(texts[j].description)
                     print(f'Found Succ AP: {texts[j].description}')
                     texts.pop(j)
@@ -40,7 +41,7 @@ def detect_text(gear_data: GearData):
                     break
         if fnmatch(text.description, '*Awakening*'):
             for j in range(count, len(texts)):
-                if texts[j].description.isnumeric() & same_line(text, texts[j]):
+                if texts[j].description.isnumeric() & same_line(text, texts[j], tolerance):
                     gear_data.awak_ap = int(texts[j].description)
                     print(f'Found Awak AP: {texts[j].description}')
                     texts.pop(j)
@@ -48,7 +49,7 @@ def detect_text(gear_data: GearData):
                     break
         if fnmatch(text.description, '*Talent*'):
             for j in range(count, len(texts)):
-                if texts[j].description.isnumeric() & same_line(text, texts[j]):
+                if texts[j].description.isnumeric() & same_line(text, texts[j], tolerance):
                     gear_data.awak_ap = int(texts[j].description)
                     print(f'Found Awak AP: {texts[j].description}')
                     texts.pop(j)
@@ -56,7 +57,7 @@ def detect_text(gear_data: GearData):
                     break
         if fnmatch(text.description, '*Defense*'):
             for j in range(count, len(texts)):
-                if texts[j].description.isnumeric() & same_line(text, texts[j]):
+                if texts[j].description.isnumeric() & same_line(text, texts[j], tolerance):
                     gear_data.dp = int(texts[j].description)
                     print(f'Found DP: {texts[j].description}')
                     texts.pop(j)
