@@ -29,33 +29,37 @@ def detect_text(gear_data: GearData):
     print('Removing from stack:')
     print(texts.pop(0))
     for count, text in enumerate(texts):
-        print(text.description)
+        print(f'{text.description} - {text.bounding_poly.vertices[1].y + text.bounding_poly.vertices[2].y}')
         if fnmatch(text.description, '*Attack*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric() & same_line(text, texts[j]):
                     gear_data.succ_ap = int(texts[j].description)
-                    print(f'Found Succ AP: ${texts.pop(j)}')
+                    print(f'Found Succ AP: {texts[j].description}')
+                    texts.pop(j)
                     scores_found = scores_found + 1
                     break
         if fnmatch(text.description, '*Awakening*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric() & same_line(text, texts[j]):
                     gear_data.awak_ap = int(texts[j].description)
-                    print(f'Found Awak AP: ${texts.pop(j)}')
+                    print(f'Found Awak AP: {texts[j].description}')
+                    texts.pop(j)
                     scores_found = scores_found + 1
                     break
         if fnmatch(text.description, '*Talent*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric() & same_line(text, texts[j]):
                     gear_data.awak_ap = int(texts[j].description)
-                    print(f'Found Awak AP: ${texts.pop(j)}')
+                    print(f'Found Awak AP: {texts[j].description}')
+                    texts.pop(j)
                     scores_found = scores_found + 1
                     break
         if fnmatch(text.description, '*Defense*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric() & same_line(text, texts[j]):
                     gear_data.dp = int(texts[j].description)
-                    print(f'Found DP: ${texts.pop(j)}')
+                    print(f'Found DP: {texts[j].description}')
+                    texts.pop(j)
                     scores_found = scores_found + 1
                     break
 
