@@ -30,21 +30,21 @@ def detect_text(gear_data: GearData):
                     print(f'Found Succ AP: ${texts.pop(j)}')
                     scores_found = scores_found + 1
                     break
-        if fnmatch(text, '*Awakening*'):
+        if fnmatch(text.description, '*Awakening*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric():
                     gear_data.awak_ap = int(texts[j].description)
                     print(f'Found Awak AP: ${texts.pop(j)}')
                     scores_found = scores_found + 1
                     break
-        if fnmatch(text, '*Talent*'):
+        if fnmatch(text.description, '*Talent*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric():
                     gear_data.awak_ap = int(texts[j].description)
                     print(f'Found Awak AP: ${texts.pop(j)}')
                     scores_found = scores_found + 1
                     break
-        if fnmatch(text, '*Defense*'):
+        if fnmatch(text.description, '*Defense*'):
             for j in range(count, len(texts)):
                 if texts[j].description.isnumeric():
                     gear_data.dp = int(texts[j].description)
