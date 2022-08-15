@@ -95,18 +95,12 @@ def setup(bot):
 def check_admin(ctx):
     admin = False
     for role in ctx.author.roles:
-        if role.name == "DiscAdmin":
-            admin = True
-    if admin:
-        return True
-    else:
-        raise FailAdminCheck
+        if ('admin' in role.name.lower()):
+            return True
+    raise FailAdminCheck
 
 def check_gear_channel(ctx):
     if ctx.channel.id == 715761762992914523:
         return True
     else:
         raise FailGearChannelCheck
-
-
-
