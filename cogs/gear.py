@@ -1,6 +1,7 @@
 import asyncio
 import os
 from math import ceil
+import typing
 
 import discord
 from bin.processing import (add_gear, get_all, get_average, get_gear,
@@ -14,7 +15,7 @@ class GearCog(commands.Cog, name='Gear'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='gearadd', aliases=['ga'])
+    @commands.hybrid_command(name='gearadd')
     async def add_any_gear(self, ctx, gear_type='pve'):
         """
         Update your gear, default gear type is pve
@@ -40,8 +41,14 @@ class GearCog(commands.Cog, name='Gear'):
             response = response + (message if message else '')
             await ctx.send(response)
 
-
-    @commands.command(name='purge')
+    @commands.hybrid_command(name='geargear')
+    async def upload(self, ctx, attachment: typing.Optional[discord.Attachment]):
+        if attachment is None:
+            await ctx.send('You did not upload anything!')
+        else:
+            await ctx.send(f'You have uploaded <{attachment.url}>')
+            
+    @commands.hybrid_command(name='purge')
     async def remove_deserter_gear(self, ctx, id:int):
         """
         Remove gear of a member who left using their discord id
@@ -73,7 +80,7 @@ class GearCog(commands.Cog, name='Gear'):
             result = remove_gear(id, 'all')
             await channel.send(result.message)
 
-    @commands.command(name='gearremove', aliases=['grm'])
+    @commands.hybrid_command(name='gearremove', aliases=['grm'])
     async def remove_any_gear(self, ctx, gear_type='all'):
         """
         Remove your gear, by default removes your all entries
@@ -103,17 +110,17 @@ class GearCog(commands.Cog, name='Gear'):
             result = remove_gear(ctx.author.id, gear_type)
             await channel.send(result.message)
 
-    @commands.command(name='nouver')
+    @commands.hybrid_command(name='nouver')
     async def add_gear_nouver(self, ctx):
         """Shortcut for ?gearadd nouver"""
         await self.add_any_gear(ctx, 'nouver')
 
-    @commands.command(name='kutum')
+    @commands.hybrid_command(name='kutum')
     async def add_gear_kutum(self, ctx):
         """Shortcut for ?gearadd kutum"""
         await self.add_any_gear(ctx, 'kutum')
 
-    @commands.command(name='gear', help='Shows gear for member "~gear @Name" [nouver/kutum]')
+    @commands.hybrid_command(name='gear', help='Shows gear for member "~gear @Name" [nouver/kutum]')
     async def retrive_gear(self, ctx, user_id, gear_type: str = None):
         if len(ctx.message.mentions) == 1:
             gear_data = get_gear(ctx.message.mentions[0].id, gear_type)
@@ -132,7 +139,7 @@ class GearCog(commands.Cog, name='Gear'):
             response = 'Please @Member to get their gear'
         await ctx.send(response)
 
-    @commands.command(name='gearaverage', aliases=['gavg'], help='Get the average GS of the guild')
+    @commands.hybrid_command(name='gearaverage', aliases=['gavg'], help='Get the average GS of the guild')
     async def guild_average(self, ctx, gear_type=None):
         result = get_average(ctx.guild.id, gear_type)
         if result.status:
@@ -141,7 +148,7 @@ class GearCog(commands.Cog, name='Gear'):
             response = result.message
         await ctx.send(response)
 
-    @commands.command(name='gearall', help='Get the GS of everyone in the guild')
+    @commands.hybrid_command(name='gearall', help='Get the GS of everyone in the guild')
     async def guild_all(self, ctx, page='1', gear_type=None):
         temp = page
         try: # incase user flips the parameters
@@ -168,7 +175,7 @@ Page {page} of {ceil(results.code / 10)}: ({results.code} Entries)```'''
         await ctx.send(response)
 
 
-    @commands.command(name='gearid', help='Get the ID & Family Name of everyone with gear in the guild')
+    @commands.hybrid_command(name='gearid', help='Get the ID & Family Name of everyone with gear in the guild')
     async def guild_id(self, ctx, page='1'):
         try: # incase user flips the parameters
             page = int(page)
@@ -189,5 +196,5 @@ Page {page} of {ceil(results.code / 20)}: ({results.code} Entries)```'''
             response = results.message
         await ctx.send(response)
 
-def setup(bot):
-    bot.add_cog(GearCog(bot))
+async def setup(bot):
+    await bot.add_cog(GearCog(bot))
