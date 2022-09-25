@@ -18,11 +18,8 @@ class GearCog(commands.Cog, name='Gear'):
     @commands.hybrid_command(name='gear')
     async def gear(self, ctx, attachment: typing.Optional[discord.Attachment], user: typing.Optional[discord.User]):
         """
-        ?gear to see your own gear
-        ?gear [photo] to update your gear
-        ?gear [@member] to see someone else's gear
+        [] to see own gear, [photo] to update, [@member] to see someone else's gear
         """
-        
         if attachment is not None:
             message = ''
             gear_data = add_gear('gear', ctx, attachment)
