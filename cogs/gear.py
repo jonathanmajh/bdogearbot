@@ -54,7 +54,7 @@ class GearCog(commands.Cog, name='Gear'):
                     ])
                 return True
             else:
-                response = gear_data.message
+                await ctx.send(gear_data.message)
             
 
     @commands.hybrid_command(name='purge')
