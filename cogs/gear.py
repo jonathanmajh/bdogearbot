@@ -1,6 +1,7 @@
 import asyncio
 import os
 from math import ceil
+import typing
 
 import discord
 from bin.processing import (add_gear, get_all, get_average, get_gear,
@@ -14,24 +15,21 @@ class GearCog(commands.Cog, name='Gear'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='gearadd', aliases=['ga'])
-    async def add_any_gear(self, ctx, gear_type='pve'):
+    @commands.hybrid_command(name='gear')
+    async def gear(self, ctx, attachment: typing.Optional[discord.Attachment], user: typing.Optional[discord.User]):
         """
-        Update your gear, default gear type is pve
-
-        Suggested gear types: kutum, nouver, pvp, pve, dp-focus, evasion, ap-focus
-
-        gear type cannot be longer than 9 characters
+        ?gear to see your own gear
+        ?gear [photo] to update your gear
+        ?gear [@member] to see someone else's gear
         """
-        if len(gear_type) > 9:
-            await ctx.send('specified gear type is longer than 9 characters')
-        else:
+        
+        if attachment is not None:
             message = ''
-            gear_data = add_gear(gear_type, ctx)
+            gear_data = add_gear('gear', ctx, attachment)
             if gear_data.status:
                 message = gear_data.message
                 gear_data = gear_data.gear_data
-                response = f'{gear_type} saved for {ctx.author.display_name}. {gear_data.succ_ap}/{gear_data.awak_ap}/{gear_data.dp}: GS: {gear_data.gs}\n'
+                response = f'gear saved for {ctx.author.display_name}. {gear_data.succ_ap}/{gear_data.awak_ap}/{gear_data.dp}: GS: {gear_data.gs}\n'
             else:
                 response = gear_data.message
                 if gear_data.obj:
@@ -39,13 +37,30 @@ class GearCog(commands.Cog, name='Gear'):
                     await error_handler.send_pm(gear_data.obj)
             response = response + (message if message else '')
             await ctx.send(response)
+        else:
+            user_id = 0
+            if user is not None:
+                user_id = user.id
+            else:
+                user_id = ctx.author.id
+            gear_data = get_gear(user_id, 'gear')
+            if gear_data.status:
+                if len(gear_data.photos) == 1:
+                    await ctx.send(gear_data.message, file=discord.File(gear_data.photos[0]))
+                else:
+                    await ctx.send(gear_data.message, files=[
+                        discord.File(gear_data.photos[0]),
+                        discord.File(gear_data.photos[1]),
+                    ])
+                return True
+            else:
+                await ctx.send(gear_data.message)
+            
 
-
-    @commands.command(name='purge')
+    @commands.hybrid_command(name='purge')
     async def remove_deserter_gear(self, ctx, id:int):
         """
         Remove gear of a member who left using their discord id
-
         Will send a confirmation message
         """
         if not check_admin(ctx):
@@ -59,10 +74,10 @@ class GearCog(commands.Cog, name='Gear'):
             message = f"You are deleting {user.name}'s gear. React to confirm"
         message = await channel.send(message)
         await message.add_reaction('💯')
-        await message.add_reaction('⁉')
+        await message.add_reaction('🛑')
 
         def check(reaction, user):
-            return user == ctx.author and (str(reaction.emoji) == '💯' or str(reaction.emoji) == '⁉')
+            return user == ctx.author and (str(reaction.emoji) == '💯' or str(reaction.emoji) == '🛑')
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
         except asyncio.TimeoutError:
@@ -73,23 +88,17 @@ class GearCog(commands.Cog, name='Gear'):
             result = remove_gear(id, 'all')
             await channel.send(result.message)
 
-    @commands.command(name='gearremove', aliases=['grm'])
-    async def remove_any_gear(self, ctx, gear_type='all'):
+    @commands.hybrid_command(name='gearremove', aliases=['grm'])
+    async def remove_any_gear(self, ctx):
         """
-        Remove your gear, by default removes your all entries
-
-        Specify a gear type to remove only one entry
-
+        Remove your gear
         Will send a confirmation message
         """
-
+        gear_type='all'
         channel = ctx.message.channel
-        if gear_type == 'all':
-            message = await channel.send("You are deleting all your gear. React to confirm")
-        else:
-            message = await channel.send(f'You are deleting your {gear_type} gear. React to confirm')
+        message = await channel.send(f'You are deleting your gear. React to confirm')
         await message.add_reaction('💯')
-        await message.add_reaction('⁉')
+        await message.add_reaction('🛑')
 
         def check(reaction, user):
             return user == ctx.author and (str(reaction.emoji) == '💯' or str(reaction.emoji) == '⁉')
@@ -103,37 +112,9 @@ class GearCog(commands.Cog, name='Gear'):
             result = remove_gear(ctx.author.id, gear_type)
             await channel.send(result.message)
 
-    @commands.command(name='nouver')
-    async def add_gear_nouver(self, ctx):
-        """Shortcut for ?gearadd nouver"""
-        await self.add_any_gear(ctx, 'nouver')
-
-    @commands.command(name='kutum')
-    async def add_gear_kutum(self, ctx):
-        """Shortcut for ?gearadd kutum"""
-        await self.add_any_gear(ctx, 'kutum')
-
-    @commands.command(name='gear', help='Shows gear for member "~gear @Name" [nouver/kutum]')
-    async def retrive_gear(self, ctx, user_id, gear_type: str = None):
-        if len(ctx.message.mentions) == 1:
-            gear_data = get_gear(ctx.message.mentions[0].id, gear_type)
-            if gear_data.status:
-                if len(gear_data.photos) == 1:
-                    await ctx.send(gear_data.message, file=discord.File(gear_data.photos[0]))
-                else:
-                    await ctx.send(gear_data.message, files=[
-                        discord.File(gear_data.photos[0]),
-                        discord.File(gear_data.photos[1]),
-                    ])
-                return True
-            else:
-                response = gear_data.message
-        else:
-            response = 'Please @Member to get their gear'
-        await ctx.send(response)
-
-    @commands.command(name='gearaverage', aliases=['gavg'], help='Get the average GS of the guild')
+    @commands.hybrid_command(name='gearaverage')
     async def guild_average(self, ctx, gear_type=None):
+        """Get the average GS of the guild"""
         result = get_average(ctx.guild.id, gear_type)
         if result.status:
             response = f'Guild GS Average is: {format(result.message, ".1f")}'
@@ -141,8 +122,9 @@ class GearCog(commands.Cog, name='Gear'):
             response = result.message
         await ctx.send(response)
 
-    @commands.command(name='gearall', help='Get the GS of everyone in the guild')
+    @commands.hybrid_command(name='gearall')
     async def guild_all(self, ctx, page='1', gear_type=None):
+        """Get the GS of everyone in the guild"""
         temp = page
         try: # incase user flips the parameters
             page = int(page)
@@ -168,8 +150,9 @@ Page {page} of {ceil(results.code / 10)}: ({results.code} Entries)```'''
         await ctx.send(response)
 
 
-    @commands.command(name='gearid', help='Get the ID & Family Name of everyone with gear in the guild')
+    @commands.hybrid_command(name='gearid')
     async def guild_id(self, ctx, page='1'):
+        """Get the ID & Family Name of everyone with gear in the guild"""
         try: # incase user flips the parameters
             page = int(page)
         except ValueError:
@@ -189,5 +172,5 @@ Page {page} of {ceil(results.code / 20)}: ({results.code} Entries)```'''
             response = results.message
         await ctx.send(response)
 
-def setup(bot):
-    bot.add_cog(GearCog(bot))
+async def setup(bot):
+    await bot.add_cog(GearCog(bot))

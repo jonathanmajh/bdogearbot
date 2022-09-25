@@ -9,4 +9,3 @@ Quickly retrive gear for all members of the guild
 
 ![Image](https://raw.githubusercontent.com/jonathanmajh/bdogearbot/master/screenshots/list_gear.JPG)
 
-Currently the bot is in beta DM TWICEAhri#4578 to test
