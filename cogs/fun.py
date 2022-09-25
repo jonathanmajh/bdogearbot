@@ -49,7 +49,7 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
             else:
                 response = 'There are no saved messages'
         elif arg == 'list' or arg == 'listd':
-            response = '```'
+            response = ''
             messages = get_server_message(ctx.guild.id, True)
             if messages:
                 for message in messages:
@@ -57,7 +57,7 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
                         response = f'{response}{message[0]}\n'
                     else:
                         response = f'{response}{message[0]}|{message[1]}\n'
-                response = f'{response}```'
+                response = f'{response}'
             else:
                 response = 'There are no saved messages'
         else:
