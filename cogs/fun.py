@@ -9,11 +9,13 @@ from discord.ext import commands, tasks
 
 
 class ForFunCog(commands.Cog, name='4FUNctions'):
+    """Dachi use to be cool...before sOmEbOdY ruined everything"""
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command(name='trees')
+    @commands.hybrid_command(name='hug')
     async def hug(self, ctx):
+        """Ask for a hug, the response is legally binding"""
         members = ctx.guild.members
         found = False
         while not found:
@@ -28,6 +30,7 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
 
     @commands.hybrid_command(name='emote')
     async def emote(self,ctx, emote_name: str):
+        """You are a nerd who wants to use BDO chat emotes"""
         emote_path = f"{os.getenv('HOME_PATH')}assets/emotes/{emote_name}.gif"
         if os.path.isfile(emote_path):
             await ctx.send(file=discord.File(emote_path))
@@ -37,9 +40,7 @@ class ForFunCog(commands.Cog, name='4FUNctions'):
     @commands.hybrid_command(name='expose')
     async def guild(self,ctx, *, arg=None):
         """
-        Send a scathing message about the guild
-
-        ?guild list to show all messages
+        Send a scathing message about the guild, add [list] to show all messages
         """
         if arg == None:
             result = get_server_message(ctx.guild.id, False)
